@@ -23,7 +23,11 @@ Then run the following command to build out your `raas` and `salt-master` docker
 
 Once the containers are built go to the `salt-lab` directory and run `docker compose up -d`. It will take about 2 minutes for everything to initialize within the containers. Subsequent restarts are much faster as first time bootstrapping does not need to be done.
 
-To reset your lab to a "like new" state use the `reset.sh` script in `salt-lab`.
+To reset your lab to a "like new" state:
+
+- `docker compose down`
+- `./reset.sh`
+- `docker compose up -d`
 
 ## To-Do
 
