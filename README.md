@@ -21,7 +21,7 @@ Then run the following command to build out your `raas` and `salt-master` docker
 ./build-containers.sh vRA_SaltStack_Config-8.13.0.4-1.el9_Installer.tar.gz
 ```
 
-Once the containers are built navigate to the `salt-lab` directory and set the desired postgres credentials in `compose.yaml`, and set the desired redis password in `redis/redis.conf`. With the credentials for the DB and cache set and known, run the `save_creds.sh` script and provide the credentials. This will create the `raas/raas.seconf` file that the raas process needs to authenticate to the postgres and redis services.
+Once the containers are built navigate to the `salt-lab` directory and set the desired postgres credentials in `compose.yaml`, and set the desired redis password in `redis/redis.conf`. With the credentials for the DB and cache set and known, run the `save_creds.sh` script and provide the credentials. The user name for redis is "default". This will create the `raas/raas.seconf` file that the raas process needs to authenticate to the postgres and redis services.
 
 Once the `save_creds.sh` script completes you can bring the lab up with `docker compose up -d` and access it at [localhost:8080](http://localhost:8080). Note that there are no certificates applied to any of the components deployed here.
 
@@ -29,3 +29,4 @@ Once the `save_creds.sh` script completes you can bring the lab up with `docker 
 
 - create script to export/import DB
 - create script to backup/deploy all config files
+- import initial DB content as part of init
