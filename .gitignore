@@ -8,6 +8,10 @@
 !containers/raas
 !containers/raas/Dockerfile
 !salt-lab/compose.yaml
+!salt-lab/master/master.d/eAPIMasterPaths.conf
+!salt-lab/master/master.d/raas.conf
+!salt-lab/redis/redis.conf
+!salt-lab/raas/raas
 
 # Disallowed files
 salt-lab/redis/*
