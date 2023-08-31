@@ -20,9 +20,14 @@ services:
       - "8080:8080"
     volumes:
       - ./raas:/etc/raas
+    depends_on:
+      - postgres
+      - redis
 
   salt-master:
     image: salt-master:latest
     command: "-l debug"
     volumes:
       - ./master:/etc/salt
+    depends_on:
+      - raas
