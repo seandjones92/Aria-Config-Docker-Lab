@@ -16,6 +16,7 @@ then
   bash -c "/usr/bin/raas dump --insecure --server http://localhost:8080 --auth root:salt --mode import < /tmp/sample-resource-types.raas"
   # set flag to go straight to raas run on subsequent starts
   touch /etc/raas/initialized
+  pkill raas
 fi
 
 # run raas with all passed options
