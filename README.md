@@ -33,4 +33,3 @@ To reset your lab to a "like new" state:
 
 - create script to export/import DB
 - create script to backup/deploy all config files
-- import initial DB content as part of init
