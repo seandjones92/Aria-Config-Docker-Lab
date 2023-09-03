@@ -4,3 +4,7 @@ data/postgres/*
 build/raas/eapi_service
 build/salt-master/eapi_plugin
 build/sse-installer
+data/master/pki/*
+data/raas/initialized
+data/raas/raas.secconf
+data/raas/pki/*
