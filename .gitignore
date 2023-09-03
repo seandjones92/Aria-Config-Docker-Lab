@@ -1,25 +1,6 @@
-# Allowed files
-!containers
-!containers/build-containers.sh
-!containers/README
-!containers/salt-minion
-!containers/salt-master
-!containers/salt-master/Dockerfile
-!containers/raas
-!containers/raas/Dockerfile
-!salt-lab/compose.yaml
-!salt-lab/master/master.d/eAPIMasterPaths.conf
-!salt-lab/master/master.d/raas.conf
-!salt-lab/redis/redis.conf
-!salt-lab/raas/raas
-
-# Disallowed files
-salt-lab/redis/*
-salt-lab/postgres/*
-salt-lab/master/*
-salt-lab/raas/*
-containers/vRA_SaltStack_Config-*.tar
-containers/vRA_SaltStack_Config-*.tar.gz
-containers/raas/eapi_service/*
-containers/salt-master/eapi_plugin/*
-containers/sse-installer/*
+vRA_SaltStack_Config*tar
+.env
+data/postgres/*
+build/raas/eapi_service
+build/salt-master/eapi_plugin
+build/sse-installer

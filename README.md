@@ -4,32 +4,13 @@ Project to help run [Aria Automation Config](https://www.vmware.com/products/ari
 
 ## Setup
 
-To get started download the `*.tar.gz` installable for el9 and place it in the `containers` directory. For example:
+To get started download the `*.tar.gz` installable for el9 and place it in root of the project. Then run the `prep.sh` script. This will unpack the installer tar into the proper locations and will build an `.env` file for docker.
+Once that is completed run `docker compose up -d`. After the containers are started it will take about 2 minutes for first time bootstrapping to complete.
 
-```bash
-$ ls -1
-README.md
-build-containers.sh
-raas
-salt-master
-vRA_SaltStack_Config-8.13.0.4-1.el9_Installer.tar.gz
-```
-
-Then run the following command to build out your `raas` and `salt-master` docker images from the provided installable bundle:
-
-```bash
-./build-containers.sh vRA_SaltStack_Config-8.13.0.4-1.el9_Installer.tar.gz
-```
-
-Once the containers are built go to the `salt-lab` directory and run `docker compose up -d`. It will take about 2 minutes for everything to initialize within the containers. Subsequent restarts are much faster as first time bootstrapping does not need to be done.
+## Factory reset
 
 To reset your lab to a "like new" state:
 
 - `docker compose down`
 - `./reset.sh`
 - `docker compose up -d`
-
-## To-Do
-
-- create script to export/import DB
-- create script to backup/deploy all config files
