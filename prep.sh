@@ -55,7 +55,7 @@ then
 	read -p "redis password: " REDIS_PASS
 	echo "POSTGRES_USER=${POSTGRES_USER}" >> .env
 	echo "POSTGRES_PASS=${POSTGRES_PASS}" >> .env
-	echo "REDIS_PASS=${REDIS_PASS}" >> .env
+	echo "REDIS_PASS=${REDIS_PASS}" > data/redis/redis.conf
 else
 	echo "unsupported option"
 fi
