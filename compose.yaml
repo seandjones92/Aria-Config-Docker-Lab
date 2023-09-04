@@ -4,7 +4,7 @@ services:
     image: postgres:15.4
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_PASSWORD=${POSTGRES_PASS}
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
 
