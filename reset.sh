@@ -1,5 +1,6 @@
 #!/bin/bash
 
+docker compose down
 rm -rf data/postgres/*
 rm -rf data/raas/pki/
 rm -rf data/raas/raas.secconf

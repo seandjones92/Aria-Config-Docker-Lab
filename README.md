@@ -9,8 +9,4 @@ Once that is completed run `docker compose up -d`. After the containers are star
 
 ## Factory reset
 
-To reset your lab to a "like new" state:
-
-- `docker compose down`
-- `./reset.sh`
-- `docker compose up -d`
+To reset your lab to a "like new" state run `./reset.sh`.
