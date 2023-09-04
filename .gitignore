@@ -8,3 +8,4 @@ data/master/pki/*
 data/raas/initialized
 data/raas/raas.secconf
 data/raas/pki/*
+data/redis/redis.conf
