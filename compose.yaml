@@ -14,7 +14,6 @@ services:
       - ./data/redis:/usr/local/etc/redis
 
   raas:
-    # image: raas:latest
     platform: "linux/amd64"
     build:
       context: ./build/raas
@@ -30,7 +29,6 @@ services:
       - redis
 
   salt-master:
-    # image: salt-master:latest
     build:
       context: ./build/salt-master
       args:
