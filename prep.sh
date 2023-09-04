@@ -47,7 +47,7 @@ if [[ $use_defaults == "y" ]]
 then
 	echo "POSTGRES_USER=default" >> .env
 	echo "POSTGRES_PASS=postgres123" >> .env
-	echo "REDIS_PASS=redis123" >> .env
+	echo "REDIS_PASS=redis123" >> data/redis/redis.conf
 elif [[ $use_defaults == "n" ]]
 then
 	read -p "postgres user: " POSTGRES_USER
