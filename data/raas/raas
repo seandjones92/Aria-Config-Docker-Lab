@@ -1,0 +1,461 @@
+# RaaS Default Configuration
+
+# How often to run the compile_commands job that updates the activity tab
+activity_tab_cycle: 15
+
+# audit tracking settings
+audit:
+  enabled: false
+  valid_logins: false
+  auth: true
+  rpc: true
+  system: true
+  tasks: false
+  rpc_max_payload: 100
+
+# authentication backends
+authers:
+  ldap:
+    log_detail: ERROR
+    ssl: {}
+    ldap_receive_timeout: 60
+    group_level_limit: 20
+    auto_referrals: true
+
+# Configuration settings for background workers. Settings for each queue:
+#   concurrency: number of worker processes (0 = auto calc one per core up to max)
+#   max_tasks: worker recycles after running this many tasks
+#   max_memory: in kB, 0=auto, None=unlimited
+#   result_expires: how long results are stored in Redis, in seconds
+#   prefetch_multiplier: How many messages to prefetch at a time multiplied by the number of concurrent processes
+#   without_heartbeat: When true, don't send event heartbeats. Reduces Redis usage.
+#   without_mingle: When true, Don't synchronize with other workers at start-up. Reduces worker startup up time.
+#   without_gossip: When true, Don't subscribe to other workers events. Reduces redis usage.
+#   use_fair_scheduler: Use Celery's fair scheduling algorithm, better for long running tasks
+background_workers:
+  combined_process: true # Launch celery workers and RaaS processes together.  Set to False if running celery separately.
+  broker: redis
+  backend: redis
+  log_level: warning
+  celery:
+    concurrency: 0
+    max_tasks: 100000
+    max_memory: 0
+    result_expires: 60
+    prefetch_multiplier: 1
+    without_heartbeat: false
+    without_mingle: true
+    without_gossip: true
+    use_fair_scheduler: true
+  lr:
+    concurrency: 0
+    max_tasks: 100000
+    max_memory: 0
+    result_expires: 60
+    prefetch_multiplier: 1
+    without_heartbeat: false
+    without_mingle: true
+    without_gossip: true
+    use_fair_scheduler: true
+  grainscache:
+    concurrency: 0
+    max_tasks: 100000
+    max_memory: 0
+    result_expires: 60
+    prefetch_multiplier: 1
+    without_heartbeat: false
+    without_mingle: true
+    without_gossip: true
+    use_fair_scheduler: true
+
+# how often to run cache jobs (in seconds)
+cache_cycle: 30
+
+# path to RaaS cache directory
+cachedir: /var/lib/raas/cache
+
+# how often to run clean up jobs (in seconds)
+clean_up_cycle: 900
+
+# cloud-specific configuration
+cloud:
+  enable_tornado:
+    comment: conditionally start tornado web server process
+    os: ENABLE_TORNADO
+    default: true
+  enable_celery_beat:
+    comment: conditionally start celery beat process
+    os: ENABLE_CELERY_BEAT
+    default: true
+  enable_celery_worker:
+    comment: conditionally start celery worker process
+    os: ENABLE_CELERY_WORKER
+    default: true
+  enable_celery_lr_worker:
+    comment: conditionally start celery long-running worker process
+    os: ENABLE_CELERY_LR_WORKER
+    default: true
+  enable_celery_grainscache_worker:
+    comment: conditionally start celery grains cache worker process
+    os: ENABLE_CELERY_GRAINSCACHE_WORKER
+    default: true
+  enable_metrics:
+    comment:
+      conditionally start metrics server process (i.e. for the prometheus use
+      case)
+    os: ENABLE_METRICS_SERVER
+    default: true
+
+# path to config directory (can be passed multiple times, order is respected)
+config_dir:
+  - /etc/raas
+
+# read files in config_dir subdirs recursively
+config_recurse: false
+
+# Log a warning when the total number of internal jobs to compile exceeds this threshold.
+compile_commands_warn_threshold: 1000
+
+# HTTP Cookie settings
+cookie:
+  name: raas-session
+  expires: 43200
+
+# for use with the webpack dev server only, Add the Access-Control-Allow-Origin: * header
+cors_header_for_webpack: false
+
+# Your customer ID
+customer_id: 43cab1f4-de60-4ab1-85b5-1d883c5c5d09
+
+# directory to serve files from
+directory_root: /srv/raas
+
+# enable (true) or disable (false) grains indexing.
+enable_grains_indexing: true
+
+# enable (true) or disable (false) cmd details in get_cmds API call. Should be disabled when return counts are large.
+enable_cmd_details: true
+
+# Limit returns passed to UI so they don't crash the browser. 0 is unlimited. Recommended to set as a mutliple of 50.
+cmd_returns_max: 0
+
+# path to extension module directory
+extension_modules: /var/lib/raas/cache/ext_mods
+
+# Use FIPS-compliant encryption
+fips_mode: false
+
+# Limit masterfs returns passed to UI so they don't crash the browser. 0 is unlimited. Recommended to set as a mutliple of 50.
+fs_returns_max: 0
+
+# the address to bind to
+interface: 0.0.0.0
+
+# time to check unresponsive jobs (in minutes)
+job_unresponsive_check: 5
+
+# time to stop checking unresponsive jobs (in minutes)
+job_unresponsive_check_stop: 2880
+
+# JSON Web Token settings
+jwt:
+  expires: 3600 # token expiration in seconds
+  login_expires: 60 # external authentication, login token expiration in seconds
+  algorithm: HS256
+  max_logins: 256
+
+# How long to keep historical data in days (leave unset to keep forever)
+keep_history:
+  audit: # How long to keep audit log (if audit is enabled)
+  events: 1 # How long to keep salt events
+  jobs: # How long to keep job data (commands, jids, returns)
+  schedule: # How long to keep past schedule data
+
+# Content and style of banner to show on UI login screen. A YAML block scalar
+# can help with long message content:
+#   message: >
+#     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+#     tempor incididunt ut labore et dolore magna aliqua.
+login_banner:
+  enabled: false
+  style: info # info or warning
+  message: ""
+
+# Maximum number of logs files when using rotating logs
+log_backup_count: 3
+
+# date and time format for console logs
+log_datefmt: "%Y-%m-%d %H:%M:%S %Z"
+
+# date and time format for logfile logs
+log_datefmt_logfile: "%Y-%m-%d %H:%M:%S %Z"
+
+# path to log file
+log_file: /var/log/raas/raas
+
+# loglevel for logfile logs, options: all, garbage, trace, debug, profile, info, warning, error, critical, quiet
+log_file_loglevel: error
+
+# log format for console logs
+log_fmt_console:
+  "%(asctime)s,%(msecs)03.0f [org_id:%(org_id)s][%(name)-17s][%(levelname)-8s:%(lineno)-4d][%(processName)s:%(process)d]
+  %(message)s"
+
+# log format for logfile logs
+log_fmt_logfile:
+  "%(asctime)s,%(msecs)03.0f [org_id:%(org_id)s][%(name)-17s][%(levelname)-8s:%(lineno)-4d][%(processName)s:%(process)d]
+  %(message)s"
+
+# loglevels for specific python modules
+log_granular_levels: {}
+
+# options: all, garbage, trace, debug, profile, info, warning, error, critical, quiet
+log_level: error
+
+# Maximum number of bytes per log when using rotating logs
+log_max_bytes: 262144000
+
+# master RSA private key size
+master_key_size: 2048
+
+# expiration timeout for pending master keys in seconds
+master_pending_key_expiration: 7200
+
+# master/minion will be marked as unknown if they haven't reported back within X seconds.
+raas_presence_expiration: 3600
+
+# max number of unresponsive master checks
+master_unresponsive_check_limit: 2
+
+# template used to generate master users
+master_username_template: master_{}
+
+# Automatically accept masters, use only for development.
+master_autoaccept: false
+
+# System metrics settings
+metrics:
+  enabled: true # If True, enable the collection of system metrics
+  prometheus: true # If True, enable the Prometheus endpoint at /metrics (also set prometheus_username and prometheus_password)
+  prometheus_username: prometheus # Static username for retrieving /metrics
+  prometheus_password: prometheus # Static password for retrieving /metrics
+  snapshot_interval: 60 # How often to record snapshot metrics, in seconds
+  max_query_timedelta: 86400 # Maximum timedelta for a single call to get_system_metrics, in seconds
+  keep: 30 # How long to retain metrics data, in days
+
+# ignore some minion grains, glob matching allowed
+minion_grains_filter:
+  mode: blacklist
+  grains: []
+
+# 0=off, max seconds to lock when adding minion keys and cache. This throttles insert of minions into the database.
+minion_onboarding_throttle: 0
+
+# max number of auto calculated processes per type. example: 8 max web, 8 max background workers
+max_processes: 8
+
+# Minion deployment settings
+minion_deployment:
+  max_minion_deployment_time: 1800 # Maximum time (in seconds) allowed for minion deployment after which status will be marked as failed
+  airgap_install: false # Deploy minions in an airgapped environment
+
+newrelic_config_file: /etc/raas/newrelic.ini
+
+newrelic_enabled: false
+
+# number of web server processes (0 = auto calc one per core up to max)
+num_processes: 0
+
+# number of password attempts to start blocking
+password_attempts: 50
+
+# number of seconds to sleep following a failed attempt
+password_sleep: 30
+
+# path to RaaS process ID file
+pidfile: /var/lib/raas/run/raas.pid
+
+# path to directory for RaaS PKI keys
+pki_dir: /etc/raas/pki
+
+# port to bind to
+port: 8080
+
+# To use the the environment variable REDIS_URL, set `url: ENV`.
+redis:
+  url: redis://redis:6379 # Redis URL without '/{database_number}' at the end
+  broker_db: "0" # queue database number
+  result_db: "1" # result storage database number
+  cache_db: "2" # cache database number
+  ssl: {}
+
+# multiplier used to calculate retry timing on connection failures
+retry_timeout_multiplier: 3
+
+root_dir: /
+
+# how often to check for scheduled jobs (in seconds)
+schedule_cycle: 10
+
+# how many future schedules are calculated per cycle
+scheduler_max_futures_per_cycle: 500
+
+# how many weeks ahead schedules are calculated out to
+scheduler_max_futures_weeks_ahead: 12
+
+# SecOps settings
+sec:
+  stats_snapshot_interval: 3600 # Interval in seconds between when stats for Secops will be gathered (ENV Var: SSE_SEC_STATS_SNAPSHOT_INTERVAL)
+  username: secops # Username used to log in to enterprise.saltstack.com to get content (ENV Var: SSE_SEC_USERNAME)
+  content_url: https://enterprise.saltstack.com/secops_downloads # URL from which SaltStack Secops content will be downloaded. (ENV Var: SSE_SEC_CONTENT_URL)
+  ingest_saltstack_override: true # If True, existing SaltStack content will be updated otherwise the change will be rejected. (ENV Var: SSE_SEC_INGEST_SALTSTACK_OVERRIDE)
+  ingest_custom_override: true # If True, existing Custom content will be updated otherwise the change will be rejected. (ENV Var: SSE_SEC_INGEST_CUSTOM_OVERRIDE)
+  locke_dir: locke # Location where SaltStack content in expanded before ingestion. If the path is relative (no leading slash), then it is relative to the RAAS cache dir (ENV Var: SSE_SEC_LOCKE_DIR)
+  post_ingest_cleanup: true # If True, post ingestion the contents of the locke_dir will be cleaned out. (ENV Var: SSE_SEC_POST_INGEST_CLEANUP)
+  download_enabled: true # If True, SaltStack content downloading is enabled. (should be False for air gapped systems) (ENV Var: SSE_SEC_DOWNLOAD_ENABLED)
+  download_frequency: 86400 # The frequency in seconds of automated SaltStack Secops content downloads and ingestion. (ENV Var: SSE_SEC_DOWNLOAD_FREQUENCY)
+  compile_stats_interval: 10 # Interval in seconds between times that the compile stats will be gathered. (ENV Var: SSE_SEC_COMPILE_STATS_INTERVAL)
+  archive_interval: 300 # The interval in seconds between attempts to archive old assessment/remediation results (ENV Var: SSE_SEC_ARCHIVE_INTERVAL)
+  old_policy_file_lifespan: 2 # The lifespan of old lock policy files in days that will remain in the RAAS file system
+  delete_old_policy_files_interval: 86400 # The interval in seconds between times that theold lock policy files in the RAAS file system will be deleted
+  ingest_on_boot: true # If True, SaltStack Secops content will be downloaded and ingested soon after RAAS boot (ENV Var: SSE_SEC_INGEST_ON_BOOT)
+  content_lock_block_timeout: 120 # This is the maximum time a RAAS head will block on a lock to perform a SaltStack SecOps download and ingestion. (ENV Var: SSE_SEC_CONTENT_LOCK_BLOCK_TIMEOUT)
+
+# Sentry DSN to report errors (sensitive data is obfuscated)
+sentry_dsn:
+
+# path to RaaS directory for socket files
+sock_dir: /var/lib/raas/sock
+
+# for development only, always serve the session cookie regardless of the request being http or https
+spa_serve_cookie_always: false
+
+# REQUIRED: fill in your database info
+# - SQLAlchemy options - http://docs.sqlalchemy.org/en/rel_1_0/dialects/index.html
+# - To use the the environment variable DATABASE_URL, set `url: ENV`. For example:
+#   $ export DATABASE_URL=postgres://user:secret@localhost:5432/raas_db_name
+# - To store database credentials in an encrypted file, run "raas save_creds"
+#   after installation.
+# - It is possible, but not recommended practice, to specify database credentials
+#   in plaintext in this section as `username: user` and `password: secret`.
+# - Make sure you specify the correct SSL parameters by setting `ssl: False`
+#   or `True` and filling in the correct fields in `ssl_opts` OR
+#   adding the right query parameters in the DATABASE_URL.
+# - NOTE DATABASE_URL takes precedence over all other settings except username and password
+sql:
+  dialect: postgresql
+  driver: psycopg2
+  host: postgres
+  port: 5432
+  pool_size: 10
+  pool_timeout: 10
+  pool_recycle: 3600
+  chunksize_yield_per_small_table: 1000
+  chunksize_yield_per_big_table: 5000
+  ssl: false
+  ssl_opts: {}
+
+# strict transport security header enabled (aka HSTS, HTTPS only)
+strict_transport_security_header_enabled: true
+
+# Do not calculate target group membership locally, have masters send it.
+target_groups_from_master_only: false
+
+# cross-site request forgery cookie enabled
+tornado_xsrf_cookies_enabled: true
+
+# Configuration for some UI features
+ui_features: {}
+
+# check the running environment prior to starting services
+verify_env: true
+
+# VIP Integration
+vip:
+  vip_url: http://127.0.0.1:8091 # url to which all /i18n requests should be proxied
+
+# Vulnerability Management settings
+vman:
+  vman_dir: vman # Location where SaltStack content in expanded before ingestion. If the path is relative (no leading slash), then it is relative to the RAAS cache dir (ENV Var: SSE_VMAN_DIR)
+  download_enabled: true # If True, SaltStack content downloading is enabled. (should be False for air gapped systems) (ENV Var: SSE_VMAN_DOWNLOAD_ENABLED)
+  download_frequency: 86400 # The frequency in seconds of automated SaltStack Vulnerability Management content downloads and ingestion. (ENV Var: SSE_VMAN_DOWNLOAD_FREQUENCY)
+  username: vman # Username used to log in to enterprise.saltstack.com to get content (ENV Var: SSE_VMAN_USERNAME)
+  content_url: https://enterprise.saltstack.com/vman_downloads # URL from which SaltStack Vulnerability Management content will be downloaded. (ENV Var: SSE_VMAN_CONTENT_URL)
+  ingest_on_boot: true # If True, SaltStack Vulnerability Management content will be downloaded and ingested soon after RAAS boot (ENV Var: SSE_VMAN_INGEST_ON_BOOT)
+  post_ingest_cleanup: false # If True, post ingestion the contents of the vman_dir will be cleaned out. (ENV Var: SSE_VMAN_POST_INGEST_CLEANUP)
+  content_lock_timeout: 2000 # When multiple RAAS heads are deployed, the SaltStack vulnerability management content download and ingestion is serialized so only one RAAS head at a time will attempt it.   (ENV Var: SSE_VMAN_CONTENT_LOCK_TIMEOUT)
+  compile_stats_interval: 60 # Interval in seconds between times that the compile stats will be gathered. (ENV Var: SSE_VMAN_COMPILE_STATS_INTERVAL)
+  stats_snapshot_interval: 3600 # Interval in seconds between when stats for VMan will be gathered (ENV Var: SSE_VMAN_STATS_SNAPSHOT_INTERVAL)
+  old_policy_file_lifespan: 2 # The lifespan of old policy files in days that will remain in the RAAS file system
+  delete_old_policy_files_interval: 86400 # The interval in seconds between times that theold vman policy files in the RAAS file system will be deleted
+  tenable_asset_import_enabled: true # If True, minion grains in SSE will be sent to tenablefor matching assets
+  tenable_asset_import_grains: # Choose the minion grains that needs to be sent to tenable.Grain fqdn and ipv4 will be sent even if not included here.For additional information, please refer https://developer.tenable.com/reference#assets-import
+    - fqdn
+    - ipv4
+    - ipv6
+    - hostname
+    - mac_address
+    - netbios_name
+    - bios_uuid
+    - manufacturer_tpm_id
+    - ssh_fingerprint
+    - mcafee_epo_guid
+    - mcafee_epo_agent_guid
+    - symantec_ep_hardware_key
+    - qualys_asset_id
+    - qualys_host_id
+    - servicenow_sys_id
+    - gcp_project_id
+    - gcp_zone
+    - gcp_instance_id
+    - azure_vm_id
+    - azure_resource_id
+    - aws_availability_zone
+    - aws_ec2_instance_ami_id
+    - aws_ec2_instance_group_name
+    - aws_ec2_instance_state_name
+    - aws_ec2_instance_type
+    - aws_ec2_name
+    - aws_ec2_product_code
+    - aws_owner_id
+    - aws_region
+    - aws_subnet_id
+    - aws_vpc_id
+    - installed_software
+    - bigfix_asset_id
+
+# vRA Integration
+vra:
+  validate_ssl: true # If True, raas will validate vRA certs
+  exclude_host: true # If True, raas proxy will not pass the host header to CSP
+  saved_params_timeout: 90 # How many seconds elapse before we get that latest vra params from the db
+
+# how long to wait while reading body (seconds), when None uses tornado default
+webserver_body_timeout:
+
+# maximum amount of data for body, when None uses tornado default
+webserver_max_body_size:
+
+# maximum amount of incoming data to buffer, when None uses tornado default
+webserver_max_buffer_size:
+
+# in kB, 0=auto
+webserver_max_memory: 0
+
+# in seconds, 0=disabled
+webserver_max_time: 0
+
+# max interval in seconds subscription updates can be sent
+websocket_debounce: 5
+
+# time in seconds to send ping over websocket to keep it open
+websocket_ping_interval: 15
+
+# timeout in seconds to wait for websocket ping
+websocket_ping_timeout: 600
+
+# in seconds, polling time for non-database listening subscriptions
+websocket_polling: 15
+
+# time in seconds for a websocket ticket to expire
+websocket_ticket_expiration: 5

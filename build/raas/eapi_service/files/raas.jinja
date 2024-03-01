@@ -1,0 +1,213 @@
+# The customer_id sets up the unique namespace in the database
+customer_id: {{ sse_customer_id }}
+
+# The sql backend config, the dialect chooses which sql backend
+# We are only supporting postgres at this time
+sql:
+  dialect: postgresql
+  host: {{ sse_pg_endpoint }}
+  port: {{ sse_pg_port }}
+  driver: psycopg2
+  ssl: True
+
+# Redis settings
+redis:
+  url: redis://{{ sse_redis_endpoint }}:{{ sse_redis_port }}
+
+# Define SSL communication settings
+{%- if sse_eapi_ssl_enabled %}
+tls_minimum: 1.2
+tls_crt: {{ sse_eapi_cert }}
+tls_key: {{ sse_eapi_certkey }}
+port: 443
+{%- else %}
+port: 80
+{%- endif %}
+
+# Tuning Notes:
+#   RaaS requires at least two CPU cores on the instance where it is running
+#   Defaults of "0" for max_processes and num_processes will auto-calculate core allocation
+#   These options are provided as an override for instances with very high numbers of available cores
+#   (e.g. greater than 16 cores)
+
+# Max number of auto calculated processes PER TYPE (web server process AND background workers)
+# example: 8 max web, 8 max background workers
+# (0 = auto calc one per core up to max)
+#max_processes: 0
+
+# Number of web server processes
+# (0 = auto calc one per core up to max)
+#num_processes: 0
+
+# Configuration settings for background workers
+background_workers:
+  combined_process: true  # Launch celery workers and RaaS processes together.  Set to False if running celery separately.
+  broker: redis
+  backend: redis
+  log_level: warning
+  celery:  # Generic queue for short running tasks
+    concurrency: 0
+    max_tasks: 100000
+    max_memory: 0
+    result_expires: 60
+    prefetch_multiplier: 1
+    without_heartbeat: false
+    without_mingle: true
+    without_gossip: true
+    use_fair_scheduler: true
+  lr:  # Long running queue for tasks such as target group calculations
+    concurrency: 0
+    max_tasks: 100000
+    max_memory: 0
+    result_expires: 60
+    prefetch_multiplier: 1
+    without_heartbeat: false
+    without_mingle: true
+    without_gossip: true
+    use_fair_scheduler: true
+  grainscache:  # Queue for indexing grain data
+    concurrency: 0
+    max_tasks: 100000
+    max_memory: 0
+    result_expires: 60
+    prefetch_multiplier: 1
+    without_heartbeat: false
+    without_mingle: true
+    without_gossip: true
+    use_fair_scheduler: true
+
+# Enable (true) or disable (false) grains indexing
+# Note:
+#   Disabling grains can improve performance in very large environment with deep grain dictionary structures
+#   The trade offs are:
+#     drop-down lists of grains in the targets creation dialog will be absent
+#     modifying the default columns listed in the grid views will not be available
+enable_grains_indexing: true
+
+# Limit masterfs returns passed to UI so they don't crash the browser. 0 is unlimited. Recommended to set as a mutliple of 50.
+fs_returns_max: 0
+
+# Webserver options
+interface: 0.0.0.0
+strict_transport_security_header_enabled: true  # strict transport security header enabled (aka HSTS, HTTPS only)
+tornado_xsrf_cookies_enabled: True
+webserver_max_memory: 0      # in kB, 0=auto
+webserver_max_time: 0
+websocket_debounce: 5        # max interval in seconds subscription updates can be sent
+websocket_polling: 15
+websocket_ping_interval: 15  # time in seconds to send ping over websocket to keep it open
+websocket_ping_timeout: 600  # timeout in seconds to wait for websocket ping
+
+# JSON Web Token settings
+jwt:
+  max_logins: 10000
+  expires: 36000             # token expiration in seconds
+  login_expires: 60          # external authentication, login token expiration in seconds
+  algorithm: HS256
+
+# Content and style of banner to show on UI login screen. A YAML block scalar
+# can help with long message content:
+#   message: >
+#     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+#     tempor incididunt ut labore et dolore magna aliqua.
+login_banner:
+  enabled: false
+  style: info                # info or warning
+  message: ''
+
+# Configure how RaaS handles masters
+target_groups_from_master_only: false
+
+# Timeouts and interval-based operations
+cache_cycle: 30                      # Time for how often to run cache jobs (in seconds)
+clean_up_cycle: 900                  # Time for how often to run clean up jobs (in seconds)
+job_unresponsive_check: 5            # Time to check unresponsive jobs (in minutes)
+job_unresponsive_check_stop: 2880    # Time to stop checking unresponsive jobs (in minutes)
+master_pending_key_expiration: 7200  # Time for expiration of pending master keys in seconds
+master_unresponsive_check_limit: 2   # Max number of unresponsive master checks
+minion_onboarding_throttle: 0        # 0=off, max seconds to lock when adding minion keys and cache. This throttles insert of minions into the database.
+password_sleep: 30                   # Time for number of seconds to sleep following a failed attempt
+password_attempts: 50                # Number of password attempts to start blocking
+raas_presence_expiration: 3600       # Time in seconds to begin reporting minions as "lost" if not heard from
+retry_timeout_multiplier: 3          # Multiplier used to calculate retry timing on Redis connection failures
+schedule_cycle: 10                   # Time for how often to check for scheduled jobs (in seconds)
+
+# Logging options
+log_datefmt: '%H:%M:%S'
+log_datefmt_logfile: '%Y-%m-%d %H:%M:%S'
+log_file: /var/log/raas/raas
+log_file_loglevel: error
+log_fmt_console: '[%(levelname)-8s] %(message)s'
+log_fmt_logfile: '%(asctime)s,%(msecs)03.0f [%(name)-17s][%(levelname)-8s:%(lineno)-4d][%(processName)s:%(process)d] %(message)s'
+log_level: error
+
+# Granular logging options
+#log_granular_levels:
+#  tornado.access: debug
+
+# Enable the access audit log, this allows for tracking of all historic access to the raas apis
+# Note: For support use only; Enabling this will severely limit performance and increase the size of your database
+audit:
+  enabled: false
+  auth: false
+  valid_logins: false
+  tasks: false
+  rpc: false
+  rpc_max_payload: 100
+  system: false
+
+# Comply Settings (formerly SecOps)
+sec:
+  stats_snapshot_interval: 3600         # Interval in seconds between when stats for Secops will be gathered (ENV Var: SSE_SEC_STATS_SNAPSHOT_INTERVAL)
+  ingest_on_boot: true                  # If True, SaltStack Secops content will be downloaded and ingested soon after RAAS boot (ENV Var: SSE_SEC_INGEST_ON_BOOT)
+  username: secops                      # Username used to log in to enterprise.saltstack.com to get content (ENV Var: SSE_SEC_USERNAME)
+  ingest_custom_override: true          # If True, existing Custom content will be updated otherwise the change will be rejected. (ENV Var: SSE_SEC_INGEST_CUSTOM_OVERRIDE)
+  delete_old_policy_files_interval: 86400 # The interval in seconds between times that theold lock policy files in the RAAS file system will be deleted
+  compile_stats_interval: 10            # Interval in seconds between times that the compile stats will be gathered. (ENV Var: SSE_SEC_COMPILE_STATS_INTERVAL)
+  content_url: https://enterprise.saltstack.com/secops_downloads # URL from which SaltStack Secops content will be downloaded. (ENV Var: SSE_SEC_CONTENT_URL)
+  archive_interval: 300                 # The interval in seconds between attempts to archive old assessment/remediation results (ENV Var: SSE_SEC_ARCHIVE_INTERVAL)
+  content_lock_timeout: 60              # When multiple RAAS heads are deployed, the Aria Secure Hosts content download and ingestion is serialized so only one RAAS head at a time will attempt it.  This is the value for the redis lock timeout. (ENV Var: SSE_SEC_CONTENT_LOCK_TIMEOUT)
+  old_policy_file_lifespan: 2           # The lifespan of old lock policy files in days that will remain in the RAAS file system
+  locke_dir: locke                      # Location where SaltStack content in expanded before ingestion. If the path is relative (no leading slash), then it is relative to the RAAS cache dir (ENV Var: SSE_SEC_LOCKE_DIR)
+  ingest_saltstack_override: true       # If True, existing SaltStack content will be updated otherwise the change will be rejected. (ENV Var: SSE_SEC_INGEST_SALTSTACK_OVERRIDE)
+  post_ingest_cleanup: true             # If True, post ingestion the contents of the locke_dir will be cleaned out. (ENV Var: SSE_SEC_POST_INGEST_CLEANUP)
+  content_lock_block_timeout: 120       # This is the maximum time a RAAS head will block on a lock to perform a Aria Secure Hosts download and ingestion. (ENV Var: SSE_SEC_CONTENT_LOCK_BLOCK_TIMEOUT)
+  download_frequency: 86400             # The frequency in seconds of automated SaltStack Secops content downloads and ingestion. (ENV Var: SSE_SEC_DOWNLOAD_FREQUENCY)
+  download_enabled: true                # If True, SaltStack content downloading is enabled. (should be False for air gapped systems) (ENV Var: SSE_SEC_DOWNLOAD_ENABLED)
+
+# Protect Settings (formerly VMan)
+vman:
+  vman_dir: vman                        # Location where SaltStack content in expanded before ingestion. If the path is relative (no leading slash), then it is relative to the RAAS cache dir (ENV Var: SSE_VMAN_DIR)
+  download_enabled: true                # If True, SaltStack content downloading is enabled. (should be False for air gapped systems) (ENV Var: SSE_VMAN_DOWNLOAD_ENABLED)
+  download_frequency: 86400             # The frequency in seconds of automated SaltStack Vulnerability Management content downloads and ingestion. (ENV Var: SSE_VMAN_DOWNLOAD_FREQUENCY)
+  username: vman                        # Username used to log in to enterprise.saltstack.com to get content (ENV Var: SSE_VMAN_USERNAME)
+  content_url: 'https://enterprise.saltstack.com/vman_downloads' # URL from which SaltStack Vulnerability Management content will be downloaded. (ENV Var: SSE_VMAN_CONTENT_URL)
+  ingest_on_boot: true                  # If True, SaltStack Vulnerability Management content will be downloaded and ingested soon after RAAS boot (ENV Var: SSE_VMAN_INGEST_ON_BOOT)
+  compile_stats_interval: 60            # Interval in seconds between times that the compile stats will be gathered. (ENV Var: SSE_VMAN_COMPILE_STATS_INTERVAL)
+  stats_snapshot_interval: 3600         # Interval in seconds between when stats for VMan will be gathered (ENV Var: SSE_VMAN_STATS_SNAPSHOT_INTERVAL)
+  old_policy_file_lifespan: 2           # The lifespan of old policy files in days that will remain in the RAAS file system
+  delete_old_policy_files_interval: 86400 # The interval in seconds between times that theold vman policy files in the RAAS file system will be deleted
+
+# AD/LDAP driver configuration
+# Note: Environments with SSO solutions will prefer to use Aria Automation Config's SSO feature, configurable in the GUI
+#authers:
+#  ldap:
+#    # Allowed log levels
+#    # - OFF       # nothing is logged
+#    # - ERROR     # only exceptions are logged
+#    # - BASIC     # library activity is logged, only operation result is shown
+#    # - PROTOCOL  # LDAPv3 operations are logged, sent requests and received responses are shown
+#    # - NETWORK   # socket activity is logged
+#    # - EXTENDED  # ldap messages are decoded and properly printed
+#    log_level: ERROR
+#    ssl:
+#      # Allowed ciphers values
+#      # - TLSv1.2
+#      # - SSLv23  # Default value selected if not defined when the
+#      #           # AD auth config has use_ssl set to True
+#      ciphers: SSLv23
+#      ca_cert: /path/to/ca_cert.pem
+#      client_key = /path/to/client.key
+#      client_cert = /path/to/client.pem
+
+
