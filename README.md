@@ -12,3 +12,14 @@ Once everything is up you can load the web UI at [localhost](http://localhost:80
 ## Factory reset
 
 To reset your lab to a "like new" state run `./reset.sh`.
+
+## TODO
+
+open salt compose should have an arg in it to control if master plugin is installed or not
+remove salt-master from aria config compose, that should just be raas/postgres/redis
+
+https://stackoverflow.com/questions/38088279/communication-between-multiple-docker-compose-projects
+^^ set a common network for both composes
+
+can bring up both or specify with `-f` like:
+`docker compose -f <one compose> <the other compose>`
