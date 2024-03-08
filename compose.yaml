@@ -34,7 +34,7 @@ services:
     build:
       context: ./build/salt-master
       args:
-        salt_version: 3006.5
+        salt_version: 3006.7
         plugin_name: ${MASTER_PLUGIN_NAME}
     command: "-l debug"
     volumes:
@@ -48,47 +48,55 @@ services:
     build:
       context: ./build/salt-minion-ubuntu
       args:
-        salt_version: 3006.5
+        salt_version: 3006.7
     command: "-l debug"
     deploy:
       mode: replicated
       replicas: 1
     volumes:
       - ./data/minion.d:/etc/salt/minion.d
-  
+    depends_on:
+      - salt-master
+
   salt-minion-centos:
     build:
       context: ./build/salt-minion-centos
       args:
-        salt_version: 3006.5
+        salt_version: 3006.7
     command: "-l debug"
     deploy:
       mode: replicated
       replicas: 1
     volumes:
       - ./data/minion.d:/etc/salt/minion.d
+    depends_on:
+      - salt-master
   
   salt-minion-debian:
     build:
       context: ./build/salt-minion-debian
       args:
-        salt_version: 3006.5
+        salt_version: 3006.7
     command: "-l debug"
     deploy:
       mode: replicated
       replicas: 1
     volumes:
       - ./data/minion.d:/etc/salt/minion.d
+    depends_on:
+      - salt-master
   
   salt-minion-fedora:
     build:
       context: ./build/salt-minion-fedora
       args:
-        salt_version: 3006.5
+        salt_version: 3006.7
     command: "-l debug"
     deploy:
       mode: replicated
       replicas: 1
     volumes:
       - ./data/minion.d:/etc/salt/minion.d
+    depends_on:
+      - salt-master
 
