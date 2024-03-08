@@ -1,0 +1,94 @@
+services:
+
+  postgres:
+    image: postgres:15.4
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASS}
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7.2
+    volumes:
+      - ./data/redis:/usr/local/etc/redis
+
+  raas:
+    platform: "linux/amd64"
+    build:
+      context: ./build/raas
+      args:
+        filename: ${RAAS_RPM_NAME}
+    command: "-l debug"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data/raas:/etc/raas
+    depends_on:
+      - postgres
+      - redis
+
+  salt-master:
+    platform: "linux/amd64"
+    hostname: salt-master
+    build:
+      context: ./build/salt-master
+      args:
+        salt_version: 3006.5
+        plugin_name: ${MASTER_PLUGIN_NAME}
+    command: "-l debug"
+    volumes:
+      - ./data/master.d:/etc/salt/master.d
+      - ./data/srv-salt:/srv/salt
+      - ./data/srv-pillar:/srv/pillar
+    depends_on:
+      - raas
+
+  salt-minion-ubuntu:
+    build:
+      context: ./build/salt-minion-ubuntu
+      args:
+        salt_version: 3006.5
+    command: "-l debug"
+    deploy:
+      mode: replicated
+      replicas: 1
+    volumes:
+      - ./data/minion.d:/etc/salt/minion.d
+  
+  salt-minion-centos:
+    build:
+      context: ./build/salt-minion-centos
+      args:
+        salt_version: 3006.5
+    command: "-l debug"
+    deploy:
+      mode: replicated
+      replicas: 1
+    volumes:
+      - ./data/minion.d:/etc/salt/minion.d
+  
+  salt-minion-debian:
+    build:
+      context: ./build/salt-minion-debian
+      args:
+        salt_version: 3006.5
+    command: "-l debug"
+    deploy:
+      mode: replicated
+      replicas: 1
+    volumes:
+      - ./data/minion.d:/etc/salt/minion.d
+  
+  salt-minion-fedora:
+    build:
+      context: ./build/salt-minion-fedora
+      args:
+        salt_version: 3006.5
+    command: "-l debug"
+    deploy:
+      mode: replicated
+      replicas: 1
+    volumes:
+      - ./data/minion.d:/etc/salt/minion.d
+
