@@ -2,7 +2,7 @@
 
 # Help output for this script
 function help() {
-	echo "Usage: build-prep.sh [OPTIONS] INSTALLER_BUNDLE"
+	echo "Usage: prep.sh [OPTIONS] INSTALLER_BUNDLE"
 	echo "Extracts the installer bundle and prepares the build directories."
 	echo ""
 	echo "Options:"
