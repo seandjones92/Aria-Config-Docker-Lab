@@ -1,4 +1,5 @@
 vRA_SaltStack_Config*tar
+vRA_SaltStack_Config*tar.gz
 .env
 data/postgres/*
 build/raas/eapi_service
