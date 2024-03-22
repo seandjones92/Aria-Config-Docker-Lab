@@ -2,12 +2,14 @@
 
 # Help output for this script
 function help() {
-	echo "Usage: prep.sh [OPTIONS] INSTALLER_BUNDLE"
+	echo "Usage: prep.sh [OPTIONS] SALT_VERSION"
 	echo "Extracts the installer bundle and prepares the build directories."
 	echo ""
 	echo "Options:"
 	echo "  --clean  Clean up build dirs"
 	echo "  --help   Display this help message."
+	echo ""
+	echo "SALT_VERSION Optional. Specifiy the full version of salt to install"
 }
 
 if [[ $1 == "--help" ]]
@@ -40,7 +42,13 @@ echo "RAAS_RPM_NAME=$RAAS_FILE_NAME" >> .env
 
 MASTER_PLUGIN_PATH=$(ls build/salt-master/eapi_plugin/files/SSEAPE*.whl)
 MASTER_PLUGIN_NAME=$(basename $MASTER_PLUGIN_PATH)
+SALT_VERSION='3007.0'
+if [ $# -gt 0 ]; then
+	SALT_VERSION="$1"
+fi
 echo "MASTER_PLUGIN_NAME=$MASTER_PLUGIN_NAME" >> .env
+ECHO "SALT_VERSION=$SALT_VERSION" >> .env
 echo "POSTGRES_USER=default" >> .env
 echo "POSTGRES_PASS=postgres123" >> .env
 echo "REDIS_PASS=redis123" >> data/redis/redis.conf
+
