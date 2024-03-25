@@ -41,8 +41,6 @@ services:
       - ./data/master.d:/etc/salt/master.d
       - ./data/srv-salt:/srv/salt
       - ./data/srv-pillar:/srv/pillar
-    depends_on:
-      - raas
 
   salt-minion-ubuntu:
     build:
