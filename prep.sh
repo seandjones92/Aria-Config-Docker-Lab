@@ -47,7 +47,7 @@ if [ $# -gt 0 ]; then
 	SALT_VERSION="$1"
 fi
 echo "MASTER_PLUGIN_NAME=$MASTER_PLUGIN_NAME" >> .env
-ECHO "SALT_VERSION=$SALT_VERSION" >> .env
+echo "SALT_VERSION=$SALT_VERSION" >> .env
 echo "POSTGRES_USER=default" >> .env
 echo "POSTGRES_PASS=postgres123" >> .env
 echo "REDIS_PASS=redis123" >> data/redis/redis.conf
