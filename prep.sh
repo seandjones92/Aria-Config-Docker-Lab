@@ -52,3 +52,4 @@ echo "POSTGRES_USER=default" >> .env
 echo "POSTGRES_PASS=postgres123" >> .env
 echo "REDIS_PASS=redis123" >> data/redis/redis.conf
 
+cat .env
