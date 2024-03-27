@@ -20,4 +20,4 @@ then
 fi
 
 # run raas with all passed options
-raas "$@"
+exec raas "$@"
