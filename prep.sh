@@ -25,6 +25,7 @@ rm -rf ./build/sse-installer ./build/raas/eapi_service ./build/salt-master/eapi_
 # if we are cleaning only then stop here and don't unpack again
 if [[ $1 == "--clean" ]]
 then
+	echo "cleand out build dir and removed .env file"
 	exit 0
 fi
 
@@ -42,14 +43,18 @@ echo "RAAS_RPM_NAME=$RAAS_FILE_NAME" >> .env
 
 MASTER_PLUGIN_PATH=$(ls build/salt-master/eapi_plugin/files/SSEAPE*.whl)
 MASTER_PLUGIN_NAME=$(basename $MASTER_PLUGIN_PATH)
+echo "MASTER_PLUGIN_NAME=$MASTER_PLUGIN_NAME" >> .env
+
 SALT_VERSION='3007.0'
 if [ $# -gt 0 ]; then
 	SALT_VERSION="$1"
 fi
-echo "MASTER_PLUGIN_NAME=$MASTER_PLUGIN_NAME" >> .env
 echo "SALT_VERSION=$SALT_VERSION" >> .env
+
 echo "POSTGRES_USER=default" >> .env
 echo "POSTGRES_PASS=postgres123" >> .env
+
 echo "REDIS_PASS=redis123" >> data/redis/redis.conf
 
 cat .env
+cat data/redis/redis.conf
