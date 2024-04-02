@@ -7,11 +7,19 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASS}
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
+    logging:
+      options:
+        max-size: "200k"
+        max-file: "5"
 
   redis:
     image: redis:7.2
     volumes:
       - ./data/redis:/usr/local/etc/redis
+    logging:
+      options:
+        max-size: "200k"
+        max-file: "5"
 
   raas:
     platform: "linux/amd64"
@@ -27,6 +35,10 @@ services:
     depends_on:
       - postgres
       - redis
+    logging:
+      options:
+        max-size: "200k"
+        max-file: "5"
 
   salt-master:
     platform: "linux/amd64"
@@ -41,6 +53,10 @@ services:
       - ./data/master.d:/etc/salt/master.d
       - ./data/srv-salt:/srv/salt
       - ./data/srv-pillar:/srv/pillar
+    logging:
+      options:
+        max-size: "200k"
+        max-file: "5"
 
   salt-minion-ubuntu:
     build:
@@ -55,6 +71,10 @@ services:
       - ./data/minion.d:/etc/salt/minion.d
     depends_on:
       - salt-master
+    logging:
+      options:
+        max-size: "200k"
+        max-file: "5"
 
   salt-minion-centos:
     build:
@@ -69,6 +89,10 @@ services:
       - ./data/minion.d:/etc/salt/minion.d
     depends_on:
       - salt-master
+    logging:
+      options:
+        max-size: "200k"
+        max-file: "5"
   
   salt-minion-debian:
     build:
@@ -83,6 +107,10 @@ services:
       - ./data/minion.d:/etc/salt/minion.d
     depends_on:
       - salt-master
+    logging:
+      options:
+        max-size: "200k"
+        max-file: "5"
   
   salt-minion-fedora:
     build:
@@ -97,4 +125,8 @@ services:
       - ./data/minion.d:/etc/salt/minion.d
     depends_on:
       - salt-master
+    logging:
+      options:
+        max-size: "200k"
+        max-file: "5"
 
