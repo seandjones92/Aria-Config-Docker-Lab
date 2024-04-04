@@ -20,8 +20,7 @@ then
 fi
 
 # clean the build dirs before every build prep
-rm -rf ./build/sse-installer ./build/raas/eapi_service ./build/salt-master/eapi_plugin .env
-rm compose.yaml
+rm -rf ./build/sse-installer ./build/raas/eapi_service ./build/salt-master/eapi_plugin .env compose.yaml
 
 # Check if the user has requested to only clean up unpacked installer directories
 # if we are cleaning only then stop here and don't unpack again
