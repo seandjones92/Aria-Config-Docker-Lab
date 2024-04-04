@@ -11,6 +11,16 @@ If you need a specific version of salt installed pass it as an argument to `prep
 
 Once everything is up you can load the web UI at [localhost](http://localhost:8080)
 
+## Open source only
+
+If you just want to deploy salt-master and minions, without the need to have an Aria Automation Config installer bundle use `--oss` when running the prep script.  Example:
+
+`./prep.sh --oss`
+
+or
+
+`./prep.sh --oss 3007.0`
+
 ## Factory reset
 
 To reset your lab to a "like new" state run `./reset.sh`.

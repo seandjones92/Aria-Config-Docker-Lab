@@ -21,6 +21,7 @@ fi
 
 # clean the build dirs before every build prep
 rm -rf ./build/sse-installer ./build/raas/eapi_service ./build/salt-master/eapi_plugin .env
+rm compose.yaml
 
 # Check if the user has requested to only clean up unpacked installer directories
 # if we are cleaning only then stop here and don't unpack again
@@ -39,6 +40,7 @@ then
 	fi
 	echo "SALT_VERSION=$SALT_VERSION" >> .env
 	cat .env
+	ln -s oss-compose.yaml compose.yaml
 	exit 0
 fi
 
@@ -68,6 +70,8 @@ echo "POSTGRES_USER=default" >> .env
 echo "POSTGRES_PASS=postgres123" >> .env
 
 echo "REDIS_PASS=redis123" >> data/redis/redis.conf
+
+ln -s aria-compose.yaml compose.yaml
 
 cat .env
 cat data/redis/redis.conf
