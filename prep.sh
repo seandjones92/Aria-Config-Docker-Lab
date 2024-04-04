@@ -20,13 +20,17 @@ then
 fi
 
 # clean the build dirs before every build prep
-rm -rf ./build/sse-installer ./build/raas/eapi_service ./build/salt-master/eapi_plugin .env compose.yaml
+if [[ -f compose.yaml ]]
+then
+	docker compose down
+fi
+rm -rf ./build/sse-installer ./build/raas/eapi_service ./build/salt-master/eapi_plugin .env compose.yaml data/postgres/* data/raas/pki/ data/raas/raas.secconf data/raas/initialized data/master/pki/ data/redis/redis.conf
 
 # Check if the user has requested to only clean up unpacked installer directories
 # if we are cleaning only then stop here and don't unpack again
 if [[ $1 == "--clean" ]]
 then
-	echo "cleand out build dir and removed .env file"
+	echo "environment cleaned"
 	exit 0
 fi
 

@@ -23,4 +23,4 @@ or
 
 ## Factory reset
 
-To reset your lab to a "like new" state run `./reset.sh`.
+To reset your lab to a "like new" state run `./prep.sh --clean`.
