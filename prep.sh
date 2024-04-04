@@ -44,7 +44,14 @@ then
 	echo "SALT_VERSION=$SALT_VERSION" >> .env
 	cat .env
 	ln -s oss-compose.yaml compose.yaml
-	exit 0
+	while true; do
+	    read -p "Do you wish to run docker compose? " yn
+	    case $yn in
+	        [Yy]* ) docker compose up -d; exit 0; break;;
+	        [Nn]* ) exit 0;;
+	        * ) echo "Please answer yes or no.";;
+	    esac
+	done
 fi
 
 # Extract the installer bundle
@@ -78,3 +85,12 @@ ln -s aria-compose.yaml compose.yaml
 
 cat .env
 cat data/redis/redis.conf
+
+while true; do
+    read -p "Do you wish to run docker compose? " yn
+    case $yn in
+        [Yy]* ) docker compose up -d; break;;
+        [Nn]* ) exit 0;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done

@@ -1,6 +1,7 @@
 vRA_SaltStack_Config*tar
 vRA_SaltStack_Config*tar.gz
 .env
+compose.yaml
 data/postgres/*
 build/raas/eapi_service
 build/salt-master/eapi_plugin
