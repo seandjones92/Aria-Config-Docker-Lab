@@ -53,6 +53,11 @@ services:
       - ./data/master.d:/etc/salt/master.d
       - ./data/srv-salt:/srv/salt
       - ./data/srv-pillar:/srv/pillar
+    depends_on:
+      - salt-minion-ubuntu
+      - salt-minion-centos
+      - salt-minion-debian
+      - salt-minion-fedora
     logging:
       options:
         max-size: "200k"
@@ -69,8 +74,6 @@ services:
       replicas: 1
     volumes:
       - ./data/minion.d:/etc/salt/minion.d
-    depends_on:
-      - salt-master
     logging:
       options:
         max-size: "200k"
@@ -87,8 +90,6 @@ services:
       replicas: 1
     volumes:
       - ./data/minion.d:/etc/salt/minion.d
-    depends_on:
-      - salt-master
     logging:
       options:
         max-size: "200k"
@@ -105,8 +106,6 @@ services:
       replicas: 1
     volumes:
       - ./data/minion.d:/etc/salt/minion.d
-    depends_on:
-      - salt-master
     logging:
       options:
         max-size: "200k"
@@ -123,8 +122,6 @@ services:
       replicas: 1
     volumes:
       - ./data/minion.d:/etc/salt/minion.d
-    depends_on:
-      - salt-master
     logging:
       options:
         max-size: "200k"
