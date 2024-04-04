@@ -6,6 +6,7 @@ function help() {
 	echo "Extracts the installer bundle and prepares the build directories."
 	echo ""
 	echo "Options:"
+	echo "  --oss    Only prep open source bits"
 	echo "  --clean  Clean up build dirs"
 	echo "  --help   Display this help message."
 	echo ""
@@ -26,6 +27,18 @@ rm -rf ./build/sse-installer ./build/raas/eapi_service ./build/salt-master/eapi_
 if [[ $1 == "--clean" ]]
 then
 	echo "cleand out build dir and removed .env file"
+	exit 0
+fi
+
+# If only deploying oss bits then prep a minimal .env file and exit cleanly without parsing installer bundle
+if [[ $1 == "--oss" ]]
+then
+	SALT_VERSION='3007.0'
+	if [ $# -eq 2 ]; then
+		SALT_VERSION="$2"
+	fi
+	echo "SALT_VERSION=$SALT_VERSION" >> .env
+	cat .env
 	exit 0
 fi
 

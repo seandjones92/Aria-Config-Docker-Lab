@@ -1,0 +1,88 @@
+services:
+
+  salt-master:
+    platform: "linux/amd64"
+    hostname: salt-master
+    build:
+      context: ./build/oss-salt-master
+      args:
+        salt_version: ${SALT_VERSION}
+    command: "-l debug"
+    volumes:
+      - ./data/master.d:/etc/salt/master.d
+      - ./data/srv-salt:/srv/salt
+      - ./data/srv-pillar:/srv/pillar
+    depends_on:
+      - salt-minion-ubuntu
+      - salt-minion-centos
+      - salt-minion-debian
+      - salt-minion-fedora
+    logging:
+      options:
+        max-size: "200k"
+        max-file: "5"
+
+  salt-minion-ubuntu:
+    build:
+      context: ./build/salt-minion-ubuntu
+      args:
+        salt_version: ${SALT_VERSION}
+    command: "-l debug"
+    deploy:
+      mode: replicated
+      replicas: 1
+    volumes:
+      - ./data/minion.d:/etc/salt/minion.d
+    logging:
+      options:
+        max-size: "200k"
+        max-file: "5"
+
+  salt-minion-centos:
+    build:
+      context: ./build/salt-minion-centos
+      args:
+        salt_version: ${SALT_VERSION}
+    command: "-l debug"
+    deploy:
+      mode: replicated
+      replicas: 1
+    volumes:
+      - ./data/minion.d:/etc/salt/minion.d
+    logging:
+      options:
+        max-size: "200k"
+        max-file: "5"
+  
+  salt-minion-debian:
+    build:
+      context: ./build/salt-minion-debian
+      args:
+        salt_version: ${SALT_VERSION}
+    command: "-l debug"
+    deploy:
+      mode: replicated
+      replicas: 1
+    volumes:
+      - ./data/minion.d:/etc/salt/minion.d
+    logging:
+      options:
+        max-size: "200k"
+        max-file: "5"
+  
+  salt-minion-fedora:
+    build:
+      context: ./build/salt-minion-fedora
+      args:
+        salt_version: ${SALT_VERSION}
+    command: "-l debug"
+    deploy:
+      mode: replicated
+      replicas: 1
+    volumes:
+      - ./data/minion.d:/etc/salt/minion.d
+    logging:
+      options:
+        max-size: "200k"
+        max-file: "5"
+
