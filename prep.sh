@@ -37,13 +37,20 @@ fi
 # If only deploying oss bits then prep a minimal .env file and exit cleanly without parsing installer bundle
 if [[ $1 == "--oss" ]]
 then
+	# Determine salt version to use
 	SALT_VERSION='3007.0'
 	if [ $# -eq 2 ]; then
 		SALT_VERSION="$2"
 	fi
 	echo "SALT_VERSION=$SALT_VERSION" >> .env
+
+	# print .env file for user to quickly validate correct values 
 	cat .env
+
+	# link the oss-compose.yaml
 	ln -s oss-compose.yaml compose.yaml
+
+	# offer to bring up the environment for the user
 	while true; do
 	    read -p "Do you wish to run docker compose? " yn
 	    case $yn in
@@ -81,11 +88,14 @@ echo "POSTGRES_PASS=postgres123" >> .env
 
 echo "REDIS_PASS=redis123" >> data/redis/redis.conf
 
+# link the aria compose file
 ln -s aria-compose.yaml compose.yaml
 
+# print the env environment for user to validate
 cat .env
 cat data/redis/redis.conf
 
+# offer to bring up the environment for user
 while true; do
     read -p "Do you wish to run docker compose? " yn
     case $yn in
