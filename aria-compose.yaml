@@ -1,5 +1,4 @@
 services:
-
   postgres:
     image: postgres:15.4
     environment:
@@ -14,8 +13,9 @@ services:
 
   redis:
     image: redis:7.2
-    volumes:
-      - ./data/redis:/usr/local/etc/redis
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    command: 'redis-server --requirepass "$REDIS_PASSWORD"'
     logging:
       options:
         max-size: "200k"
@@ -94,7 +94,7 @@ services:
       options:
         max-size: "200k"
         max-file: "5"
-  
+
   salt-minion-debian:
     build:
       context: ./build/salt-minion-debian
@@ -110,7 +110,7 @@ services:
       options:
         max-size: "200k"
         max-file: "5"
-  
+
   salt-minion-fedora:
     build:
       context: ./build/salt-minion-fedora
@@ -126,4 +126,3 @@ services:
       options:
         max-size: "200k"
         max-file: "5"
-

@@ -6,7 +6,7 @@ set -x
 if [ ! -f /etc/raas/initialized ]
 then
   # this line should move away from hard coded values and instead use environment variables that can be set in the compose file
-  /usr/bin/raas save_creds 'postgres={"username": "default", "password": "postgres123"}' 'redis={"username": "default", "password": "redis123"}'
+  /usr/bin/raas save_creds 'postgres={"username": "salteapi", "password": "abc123"}' 'redis={"username": "default", "password": "def456"}'
   # start raas and wait 60 seconds before continuing to allow the DB to be initialized
   raas "$@" &
   sleep 60

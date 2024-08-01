@@ -72,8 +72,6 @@ def clean_environment():
         './build/salt-master/eapi_plugin',
         'data/postgres',
         'data/raas/pki',
-        'data/raas/raas.secconf',
-        'data/raas/initialized',
         'data/master/pki',
         'data/redis'
     ]
@@ -81,6 +79,8 @@ def clean_environment():
     files_to_remove = [
         '.env',
         'compose.yaml',
+        'data/raas/raas.secconf',
+        'data/raas/initialized',
         'data/redis/redis.conf'
     ]
 
@@ -115,6 +115,7 @@ def write_env_file(salt_version, enterprise=False):
 
         env_vars["POSTGRES_USER"] = "salteapi"
         env_vars["POSTGRES_PASS"] = "abc123"
+        env_vars["REDIS_PASSWORD"] = "def456"
 
     # put all env values in a dictionary and if the key is populated write the value, otherwise skip
     with open('.env', 'a') as env_file:
@@ -203,10 +204,8 @@ def handle_enterprise_mode(salt_version):
     extract_enterprise_bundle()
     copy_enterprise_installers()
     write_env_file(salt_version, enterprise=True)
-    configure_redis()
     create_symlink('aria-compose.yaml', 'compose.yaml')
     print_file_contents('.env')
-    print_file_contents('data/redis/redis.conf')
     prompt_docker_compose()
 
 def find_salt_versions():
