@@ -112,15 +112,6 @@ def print_file_contents(file_path: str):
     else:
         print(f"{file_path} does not exist.")
 
-def create_symlink(source: str, link_name: str):
-    """
-    Creates a symbolic link from source to link_name.
-    """
-    try:
-        os.symlink(source, link_name)
-    except FileExistsError:
-        print('Cannot create symlink, file already exists.')
-
 def prepare_enterprise_bundle():
     """
     Extracts the installer bundle into the build directory and copy installers
@@ -156,8 +147,8 @@ def handle_oss_mode(salt_version: str):
     """
     clean_environment()
     write_env_file(salt_version)
-    create_symlink('oss-compose.yaml', 'compose.yaml')
-    create_symlink('data/oss-master', 'data/master.d')
+    os.symlink('oss-compose.yaml', 'compose.yaml')
+    os.symlink('./oss-master', 'data/master.d')
     print_file_contents('.env')
     prompt_docker_compose()
 
@@ -170,8 +161,8 @@ def handle_enterprise_mode(salt_version: str):
     clean_environment()
     prepare_enterprise_bundle()
     write_env_file(salt_version, enterprise=True)
-    create_symlink('aria-compose.yaml', 'compose.yaml')
-    create_symlink('data/ent-master', 'data/master.d')
+    os.symlink('aria-compose.yaml', 'compose.yaml')
+    os.symlink('./ent-master', 'data/master.d')
     print_file_contents('.env')
     prompt_docker_compose()
 
