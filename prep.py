@@ -230,15 +230,10 @@ def main():
     Main function to control the script logic.
     """
 
-
-
-    # Setup argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--clean', help='Clean up build dirs', action='store_true')
     parser.add_argument('-o', '--open-source', help='Prep open source bits', action='store_true')
     parser.add_argument('-e', '--enterprise', help='Prep enterprise bits', action='store_true')
-    # I should use urllib to check the salt repo url to auto detect the latest
-    # salt version for use as default
     parser.add_argument('salt_version', nargs='?', default='3007.0', help='Which version of salt to use')
     args = parser.parse_args()
 
