@@ -136,9 +136,9 @@ def create_symlink(source, link_name):
     except FileExistsError:
         print('Cannot create symlink, file already exists.')
 
-def extract_enterprise_bundle():
+def prepare_enterprise_bundle():
     """
-    Extracts the installer bundle into the build directory.
+    Extracts the installer bundle into the build directory and copy installers
     """
     installer_bundle = glob.glob('vRA_SaltStack_Config*.tar.gz')
     if installer_bundle:
@@ -146,11 +146,6 @@ def extract_enterprise_bundle():
             tar.extractall(path='build')
     else:
         print("Installer bundle not found.")
-
-def copy_enterprise_installers():
-    """
-    Copies installer files to the appropriate build directories.
-    """
     shutil.copytree('build/sse-installer/salt/sse/eapi_service', 'build/raas/eapi_service')
     shutil.copytree('build/sse-installer/salt/sse/eapi_plugin', 'build/salt-master/eapi_plugin')
 
@@ -188,8 +183,7 @@ def handle_enterprise_mode(salt_version):
     salt_version - string - version of salt to use
     """
     clean_environment()
-    extract_enterprise_bundle()
-    copy_enterprise_installers()
+    prepare_enterprise_bundle()
     write_env_file(salt_version, enterprise=True)
     create_symlink('aria-compose.yaml', 'compose.yaml')
     create_symlink('data/ent-master', 'data/master.d')
