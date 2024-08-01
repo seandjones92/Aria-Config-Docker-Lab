@@ -7,10 +7,6 @@ import tarfile
 import glob
 import sys
 
-# add a --config flag
-# when you use this it creates an ini config file to specify env values and stuff
-# if the file is present do not run prep.py interactively, but instead provide values in config file
-
 # Eventually replace need for dockerfiles and just generate them at prep time
 class ComposeBuilder():
     """
@@ -76,43 +72,48 @@ def clean_environment():
         'data/redis'
     ]
 
-    for directory in directories_to_remove:
-        shutil.rmtree(directory, ignore_errors=True)
-
     files_to_remove = [
         '.env',
         'compose.yaml',
         'data/redis/redis.conf'
     ]
 
+    # Delete directories specified in 'directories_to_remove'
+    for directory in directories_to_remove:
+        shutil.rmtree(directory, ignore_errors=True)
+
+    # Delete files specified in 'files_to_remove'
     for file in files_to_remove:
         if os.path.isfile(file):
             os.remove(file)
 
+def new_env_file(args):
+    """
+    Builds and populates the .env file with configurations.
+    """
+    env_vars = {}
 
-# collapse these two env_file functions into one that is more dynamic
-def oss_env_file(salt_version='3007.0'):
-    """
-    Creates and populates the .env file with necessary configurations.
-    """
-    with open('.env', 'w') as env_file:
-        env_file.write(f"SALT_VERSION={salt_version}\n")
+    # I should use urllib to check the salt repo url to auto detect the latest
+    # salt version for use as default
+    env_vars["SALT_VERSION"] = "3007.0"
 
-def enterprise_env_file(salt_version='3007.0'):
-    """
-    Builds and populates the .env file with additional configurations.
-    """
-    raas_rpm_path = glob.glob('build/raas/eapi_service/files/raas*.rpm')[0]
-    raas_rpm_name = os.path.basename(raas_rpm_path)
-    master_plugin_path = glob.glob('build/salt-master/eapi_plugin/files/SSEAPE*.whl')[0]
-    master_plugin_name = os.path.basename(master_plugin_path)
+    if '--ent' in args:
+        raas_rpm_path = glob.glob('build/raas/eapi_service/files/raas*.rpm')[0]
+        raas_rpm_name = os.path.basename(raas_rpm_path)
+        env_vars["RAAS_RPM_NAME"] = raas_rpm_name
 
+        master_plugin_path = glob.glob('build/salt-master/eapi_plugin/files/SSEAPE*.whl')[0]
+        master_plugin_name = os.path.basename(master_plugin_path)
+        env_vars["MASTER_PLUGIN_NAME"] = master_plugin_name
+
+        env_vars["POSTGRES_USER"] = "default"
+        env_vars["POSTGRES_PASS"] = "postgres123"
+
+    # put all env values in a dictionary and if the key is populated write the value, otherwise skip
     with open('.env', 'a') as env_file:
-        env_file.write(f"RAAS_RPM_NAME={raas_rpm_name}\n")
-        env_file.write(f"MASTER_PLUGIN_NAME={master_plugin_name}\n")
-        env_file.write(f"SALT_VERSION={salt_version}\n")
-        env_file.write("POSTGRES_USER=default\n")
-        env_file.write("POSTGRES_PASS=postgres123\n")
+        for env_var in env_vars:
+            env_file.write(f"{env_var}={env_vars[env_var]}")
+        # env_file.write(f"RAAS_RPM_NAME={raas_rpm_name}\n")
 
 def print_file_contents(file_path):
     """
@@ -177,11 +178,9 @@ def handle_oss_mode(args):
     """
     Handles the preparation for open-source bits.
     """
-    salt_version = '3007.0'
-    if len(args) == 2:
-        salt_version = args[1]
-    oss_env_file(salt_version)
+    new_env_file(args)
     create_symlink('oss-compose.yaml', 'compose.yaml')
+    print_file_contents('.env')
     prompt_docker_compose()
 
 def handle_enterprise_mode(args):
@@ -190,11 +189,7 @@ def handle_enterprise_mode(args):
     """
     extract_installer_bundle()
     copy_enterprise_installers()
-    # setting salt version should also be a function
-    salt_version = '3007.0'
-    if len(args) > 0:
-        salt_version = args[0]
-    enterprise_env_file(salt_version)
+    new_env_file(args)
     configure_redis()
     create_symlink('aria-compose.yaml', 'compose.yaml')
     print_file_contents('.env')
