@@ -73,7 +73,7 @@ def clean_environment():
         if os.path.islink(symlink):
             os.unlink(symlink)
 
-def write_env_file(salt_version, enterprise=False):
+def write_env_file(salt_version: str, enterprise=False):
     """
     Builds and populates the .env file with configurations.
 
@@ -102,7 +102,7 @@ def write_env_file(salt_version, enterprise=False):
         for env_var in env_vars:
             env_file.write(f"{env_var}={env_vars[env_var]}\n")
 
-def print_file_contents(file_path):
+def print_file_contents(file_path: str):
     """
     Prints the contents of the specified file.
     """
@@ -112,7 +112,7 @@ def print_file_contents(file_path):
     else:
         print(f"{file_path} does not exist.")
 
-def create_symlink(source, link_name):
+def create_symlink(source: str, link_name: str):
     """
     Creates a symbolic link from source to link_name.
     """
@@ -148,7 +148,7 @@ def prompt_docker_compose():
         else:
             print("Please answer yes or no.")
 
-def handle_oss_mode(salt_version):
+def handle_oss_mode(salt_version: str):
     """
     Handles the preparation for open-source bits.
 
@@ -161,7 +161,7 @@ def handle_oss_mode(salt_version):
     print_file_contents('.env')
     prompt_docker_compose()
 
-def handle_enterprise_mode(salt_version):
+def handle_enterprise_mode(salt_version: str):
     """
     Handles the preparation for enterprise bits.
 
