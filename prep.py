@@ -6,6 +6,8 @@ import subprocess
 import tarfile
 import glob
 import sys
+import argparse
+
 
 # TODO: need to have a doctor function that checks to make sure docker and any other tooling needs to be present
 
@@ -89,9 +91,11 @@ def clean_environment():
         if os.path.isfile(file):
             os.remove(file)
 
-def write_env_file(args):
+def write_env_file(enterprise=False):
     """
     Builds and populates the .env file with configurations.
+
+    enterprise - bool - set to true to build an enterprise env file
     """
     env_vars = {}
 
@@ -99,7 +103,7 @@ def write_env_file(args):
     # salt version for use as default
     env_vars["SALT_VERSION"] = "3007.0"
 
-    if '--ent' in args:
+    if enterprise:
         raas_rpm_path = glob.glob('build/raas/eapi_service/files/raas*.rpm')[0]
         raas_rpm_name = os.path.basename(raas_rpm_path)
         env_vars["RAAS_RPM_NAME"] = raas_rpm_name
@@ -115,6 +119,15 @@ def write_env_file(args):
     with open('.env', 'a') as env_file:
         for env_var in env_vars:
             env_file.write(f"{env_var}={env_vars[env_var]}\n")
+
+# TODO: move this into the create env file function
+def configure_redis():
+    """
+    Configures the Redis configuration file.
+    """
+    os.makedirs('data/redis', exist_ok=True)
+    with open('data/redis/redis.conf', 'w') as redis_conf:
+        redis_conf.write("REDIS_PASS=redis123\n")
 
 def print_file_contents(file_path):
     """
@@ -153,15 +166,6 @@ def copy_enterprise_installers():
     shutil.copytree('build/sse-installer/salt/sse/eapi_service', 'build/raas/eapi_service')
     shutil.copytree('build/sse-installer/salt/sse/eapi_plugin', 'build/salt-master/eapi_plugin')
 
-# TODO: move this into the create env file function
-def configure_redis():
-    """
-    Configures the Redis configuration file.
-    """
-    os.makedirs('data/redis', exist_ok=True)
-    with open('data/redis/redis.conf', 'w') as redis_conf:
-        redis_conf.write("REDIS_PASS=redis123\n")
-
 def prompt_docker_compose():
     """
     Prompts the user to run Docker Compose and acts based on the input.
@@ -176,24 +180,24 @@ def prompt_docker_compose():
         else:
             print("Please answer yes or no.")
 
-def handle_oss_mode(args):
+def handle_oss_mode():
     """
     Handles the preparation for open-source bits.
     """
     clean_environment()
-    write_env_file(args)
+    write_env_file()
     create_symlink('oss-compose.yaml', 'compose.yaml')
     print_file_contents('.env')
     prompt_docker_compose()
 
-def handle_enterprise_mode(args):
+def handle_enterprise_mode():
     """
     Handles the preparation for enterprise bits.
     """
     clean_environment()
     extract_enterprise_bundle()
     copy_enterprise_installers()
-    write_env_file(args)
+    write_env_file(enterprise=True)
     configure_redis()
     create_symlink('aria-compose.yaml', 'compose.yaml')
     print_file_contents('.env')
@@ -204,22 +208,27 @@ def main():
     """
     Main function to control the script logic.
     """
-    args = sys.argv[1:]
 
-    if '--clean' in args:
+    # Setup argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-c', '--clean', help='Clean up build dirs', action='store_true')
+    parser.add_argument('-o', '--open-source', help='Prep open source bits', action='store_true')
+    parser.add_argument('-e', '--enterprise', help='Prep enterprise bits', action='store_true')
+    args = parser.parse_args()
+
+    if args.clean:
         clean_environment()
-        print("environment cleaned")
+        print("Build environment cleaned")
         return
 
-    if '--oss' in args:
-        handle_oss_mode(args)
+    if args.open_source:
+        handle_oss_mode()
         return
 
-    if '--ent' in args:
-        handle_enterprise_mode(args)
+    # TODO: this is not creating the enterprise env file as expected
+    if args.enterprise:
+        handle_enterprise_mode()
         return
-
-    print_help_message()
 
 if __name__ == "__main__":
     main()
