@@ -31,21 +31,6 @@ def script_doctor():
     else:
         print('Docker is running')
 
-def print_help_message():
-    """
-    Displays the help message for the script.
-    """
-    print("Usage: prep.py [OPTIONS] SALT_VERSION")
-    print("Extracts the installer bundle and prepares the build directories.")
-    print("")
-    print("Options:")
-    print("  --oss    Only prep open source bits")
-    print("  --ent    Prep enterprise bits")
-    print("  --clean  Clean up build dirs")
-    print("  --help   Display this help message.")
-    print("")
-    print("SALT_VERSION Optional. Specify the full version of salt to install")
-
 def clean_environment():
     """
     Cleans up existing build directories and environment files.
