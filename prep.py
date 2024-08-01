@@ -234,7 +234,7 @@ def main():
     parser.add_argument('-c', '--clean', help='Clean up build dirs', action='store_true')
     parser.add_argument('-o', '--open-source', help='Prep open source bits', action='store_true')
     parser.add_argument('-e', '--enterprise', help='Prep enterprise bits', action='store_true')
-    parser.add_argument('salt_version', nargs='?', default='3007.0', help='Which version of salt to use')
+    parser.add_argument('salt_version', nargs='?', default='3007.1', help='Which version of salt to use')
     args = parser.parse_args()
 
     if args.clean:
