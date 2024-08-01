@@ -7,6 +7,8 @@ import tarfile
 import glob
 import sys
 import argparse
+from html.parser import HTMLParser
+import urllib.request
 
 
 # TODO: need to have a doctor function that checks to make sure docker and any other tooling needs to be present
@@ -207,10 +209,28 @@ def handle_enterprise_mode(salt_version):
     print_file_contents('data/redis/redis.conf')
     prompt_docker_compose()
 
+def find_salt_versions():
+    # reach out to https://repo.saltproject.io/salt/py3/src/ to find the latest version of salt
+    # TODO: maybe instead this should check salt bootstrap for available versions since I will be retooling around that anyways
+    with urllib.request.urlopen('https://repo.saltproject.io/salt/py3/src/') as f:
+        htmlbytes = f.read()
+        htmlstring = htmlbytes.decode("utf-8")
+
+    class MyHTMLParser(HTMLParser):
+        def handle_starttag(self, tag, attrs):
+            if tag == "a":
+                for name, value in attrs:
+                    if name == "href":
+                        print(value)
+    parser = MyHTMLParser()
+    parser.feed(htmlstring)
+
 def main():
     """
     Main function to control the script logic.
     """
+
+
 
     # Setup argparse
     parser = argparse.ArgumentParser()
