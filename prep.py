@@ -40,7 +40,7 @@ class ComposeBuilder():
         max-file: "5"
 """
 
-def help_message():
+def print_help_message():
     """
     Displays the help message for the script.
     """
@@ -89,7 +89,7 @@ def clean_environment():
         if os.path.isfile(file):
             os.remove(file)
 
-def new_env_file(args):
+def write_env_file(args):
     """
     Builds and populates the .env file with configurations.
     """
@@ -136,7 +136,7 @@ def create_symlink(source, link_name):
     except FileExistsError:
         print('Cannot create symlink, file already exists.')
 
-def extract_installer_bundle():
+def extract_enterprise_bundle():
     """
     Extracts the installer bundle into the build directory.
     """
@@ -154,6 +154,7 @@ def copy_enterprise_installers():
     shutil.copytree('build/sse-installer/salt/sse/eapi_service', 'build/raas/eapi_service')
     shutil.copytree('build/sse-installer/salt/sse/eapi_plugin', 'build/salt-master/eapi_plugin')
 
+# TODO: move this into the create env file function
 def configure_redis():
     """
     Configures the Redis configuration file.
@@ -181,7 +182,7 @@ def handle_oss_mode(args):
     Handles the preparation for open-source bits.
     """
     clean_environment()
-    new_env_file(args)
+    write_env_file(args)
     create_symlink('oss-compose.yaml', 'compose.yaml')
     print_file_contents('.env')
     prompt_docker_compose()
@@ -191,9 +192,9 @@ def handle_enterprise_mode(args):
     Handles the preparation for enterprise bits.
     """
     clean_environment()
-    extract_installer_bundle()
+    extract_enterprise_bundle()
     copy_enterprise_installers()
-    new_env_file(args)
+    write_env_file(args)
     configure_redis()
     create_symlink('aria-compose.yaml', 'compose.yaml')
     print_file_contents('.env')
@@ -219,7 +220,7 @@ def main():
         handle_enterprise_mode(args)
         return
 
-    help_message()
+    print_help_message()
 
 if __name__ == "__main__":
     main()
