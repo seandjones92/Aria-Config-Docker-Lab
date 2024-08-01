@@ -114,8 +114,7 @@ def write_env_file(args):
     # put all env values in a dictionary and if the key is populated write the value, otherwise skip
     with open('.env', 'a') as env_file:
         for env_var in env_vars:
-            env_file.write(f"{env_var}={env_vars[env_var]}")
-        # env_file.write(f"RAAS_RPM_NAME={raas_rpm_name}\n")
+            env_file.write(f"{env_var}={env_vars[env_var]}\n")
 
 def print_file_contents(file_path):
     """
