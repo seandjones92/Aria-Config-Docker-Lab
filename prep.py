@@ -158,6 +158,7 @@ def handle_oss_mode(salt_version):
     clean_environment()
     write_env_file(salt_version)
     create_symlink('oss-compose.yaml', 'compose.yaml')
+    create_symlink('data/oss-master', 'data/master.d') # TODO: this needs to be added to cleanup
     print_file_contents('.env')
     prompt_docker_compose()
 
@@ -172,6 +173,7 @@ def handle_enterprise_mode(salt_version):
     copy_enterprise_installers()
     write_env_file(salt_version, enterprise=True)
     create_symlink('aria-compose.yaml', 'compose.yaml')
+    create_symlink('data/ent-master', 'data/master.d') # TODO: this needs to be added to cleanup
     print_file_contents('.env')
     prompt_docker_compose()
 
