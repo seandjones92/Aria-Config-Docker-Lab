@@ -178,6 +178,7 @@ def handle_oss_mode(args):
     """
     Handles the preparation for open-source bits.
     """
+    clean_environment()
     new_env_file(args)
     create_symlink('oss-compose.yaml', 'compose.yaml')
     print_file_contents('.env')
@@ -187,6 +188,7 @@ def handle_enterprise_mode(args):
     """
     Handles the preparation for enterprise bits.
     """
+    clean_environment()
     extract_installer_bundle()
     copy_enterprise_installers()
     new_env_file(args)
@@ -202,24 +204,17 @@ def main():
     """
     args = sys.argv[1:]
 
-
     if '--clean' in args:
         clean_environment()
         print("environment cleaned")
         return
 
     if '--oss' in args:
-        clean_environment()
         handle_oss_mode(args)
         return
 
     if '--ent' in args:
         handle_enterprise_mode(args)
-        return
-
-    # handling help could be better
-    if '--help' in args:
-        help_message()
         return
 
     help_message()
