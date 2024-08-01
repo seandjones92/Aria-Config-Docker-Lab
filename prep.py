@@ -7,7 +7,9 @@ import tarfile
 import glob
 import sys
 
-# Eventually replace need for dockerfiles and just generate them at prep time
+# TODO: need to have a doctor function that checks to make sure docker and any other tooling needs to be present
+
+# TODO: Eventually replace need for dockerfiles and just generate them at prep time
 class ComposeBuilder():
     """
     Build out a compose file based on the methods used.
@@ -132,7 +134,7 @@ def create_symlink(source, link_name):
     try:
         os.symlink(source, link_name)
     except FileExistsError:
-        print('Cannot create symlink, file already exists')
+        print('Cannot create symlink, file already exists.')
 
 def extract_installer_bundle():
     """
