@@ -5,13 +5,8 @@ import shutil
 import subprocess
 import tarfile
 import glob
-import sys
 import argparse
-from html.parser import HTMLParser
-import urllib.request
 
-
-# TODO: need to have a doctor function that checks to make sure docker and any other tooling needs to be present
 def script_doctor():
     """
     Check if the system is able to run the script
