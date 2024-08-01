@@ -1,26 +1,29 @@
 # Aria Config Docker Lab
 
-Project to help run [Aria Automation Config](https://www.vmware.com/products/aria-automation/saltstack-config.html) in docker for testing and reference purposes. This assumes you have already paid for, or are otherwise entitled, to the installables for this product at [VMware Customer Connect](https://customerconnect.vmware.com/home). Environments created and managed by this project are not fit for production usage or anything resembling production usage, this is simply for self reference labs.
+Project to help run [Aria Automation Config](https://www.vmware.com/products/aria-automation/saltstack-config.html) in docker for testing and reference purposes.
+This assumes you have already paid for, or are otherwise entitled, to the installables for this product at [VMware Customer Connect](https://customerconnect.vmware.com/home).
+Environments created and managed by this project are not fit for production usage or anything resembling production usage, this is simply for self reference labs.
 
 ## Setup
 
-To get started download the `*.tar` installable for el9 and place it in root of the project. Then run the `prep.sh` script. This will unpack the installer tar into the proper locations and will build an `.env` file for docker.
-Once that is completed run `docker compose up -d`. After the containers are started it will take about 2 minutes for first time bootstrapping to complete.
+Tell the script if you want an open source or enterprise lab. If you want an enterprise lab you will need to place the Aria Config installer tgz file at the root of the project.
+If you want to run an open source lab no other external dependencies are needed, just an internet connection to pull Docker images and install packages into them.
 
-If you need a specific version of salt installed pass it as an argument to `prep.sh`, example: `./prep.sh 3006.7`
+```
+usage: prep.py [-h] [-c] [-o] [-e] [salt_version]
+
+positional arguments:
+  salt_version       Which version of salt to use. Defaults to 3007.1
+
+options:
+  -h, --help         show this help message and exit
+  -c, --clean        Clean up build dirs
+  -o, --open-source  Prep open source bits
+  -e, --enterprise   Prep enterprise bits
+  ```
 
 Once everything is up you can load the web UI at [localhost](http://localhost:8080)
 
-## Open source only
-
-If you just want to deploy salt-master and minions, without the need to have an Aria Automation Config installer bundle use `--oss` when running the prep script.  Example:
-
-`./prep.sh --oss`
-
-or
-
-`./prep.sh --oss 3007.0`
-
 ## Factory reset
 
-To reset your lab to a "like new" state run `./prep.sh --clean`.
+To reset your lab to a "like new" state run `./prep.py --clean`.

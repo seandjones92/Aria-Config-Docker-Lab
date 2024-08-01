@@ -19,30 +19,6 @@ class ComposeBuilder():
     Build out a compose file based on the methods used.
     """
 
-    def postgres_db_template(self, psql_version, pg_password, pg_user, logging_size, logging_files):
-        """
-        Postgres service compose.yaml template
-
-        psql_version:      postgres version. default 15.4
-        pg_password:       pg password. default postgres123
-        pg_user:           pg user. default salteapi
-        logging_size:      size of logs before rolling. default 200k
-        logging_files:     number of rolled logs to retain. default 5
-        """
-        version = "15.4"
-        psql_template = """
-  postgres:
-    image: postgres:${version}
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASS}
-    volumes:
-      - ./data/postgres:/var/lib/postgresql/data
-    logging:
-      options:
-        max-size: "200k"
-        max-file: "5"
-"""
 
 def print_help_message():
     """
