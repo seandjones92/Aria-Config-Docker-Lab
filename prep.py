@@ -113,8 +113,8 @@ def write_env_file(salt_version, enterprise=False):
         master_plugin_name = os.path.basename(master_plugin_path)
         env_vars["MASTER_PLUGIN_NAME"] = master_plugin_name
 
-        env_vars["POSTGRES_USER"] = "default"
-        env_vars["POSTGRES_PASS"] = "postgres123"
+        env_vars["POSTGRES_USER"] = "salteapi"
+        env_vars["POSTGRES_PASS"] = "abc123"
 
     # put all env values in a dictionary and if the key is populated write the value, otherwise skip
     with open('.env', 'a') as env_file:
@@ -128,7 +128,7 @@ def configure_redis():
     """
     os.makedirs('data/redis', exist_ok=True)
     with open('data/redis/redis.conf', 'w') as redis_conf:
-        redis_conf.write("REDIS_PASS=redis123\n")
+        redis_conf.write("REDIS_PASS=def456\n")
 
 def print_file_contents(file_path):
     """
