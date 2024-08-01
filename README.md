@@ -24,6 +24,17 @@ options:
 
 Once everything is up you can load the web UI at [localhost](http://localhost:8080)
 
+### Example commands
+
+To run an open source lab with the latest version of salt run the following:
+`./prep.py --open-source`
+
+To run an open source lab with a specific version of salt run something like this:
+`./prep.py --open-source 3006.8`
+
+To run an enterprise lab with the latest version of salt run the following:
+`./prep.py --enterprise`
+
 ## Factory reset
 
 To reset your lab to a "like new" state run `./prep.py --clean`.
