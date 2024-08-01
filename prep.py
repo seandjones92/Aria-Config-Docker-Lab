@@ -122,15 +122,6 @@ def write_env_file(salt_version, enterprise=False):
         for env_var in env_vars:
             env_file.write(f"{env_var}={env_vars[env_var]}\n")
 
-# TODO: move this into the create env file function
-def configure_redis():
-    """
-    Configures the Redis configuration file.
-    """
-    os.makedirs('data/redis', exist_ok=True)
-    with open('data/redis/redis.conf', 'w') as redis_conf:
-        redis_conf.write("REDIS_PASS=def456\n")
-
 def print_file_contents(file_path):
     """
     Prints the contents of the specified file.
