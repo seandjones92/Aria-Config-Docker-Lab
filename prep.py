@@ -91,17 +91,16 @@ def clean_environment():
         if os.path.isfile(file):
             os.remove(file)
 
-def write_env_file(enterprise=False):
+def write_env_file(salt_version, enterprise=False):
     """
     Builds and populates the .env file with configurations.
 
+    salt_version - string - the version of salt to set in env file
     enterprise - bool - set to true to build an enterprise env file
     """
     env_vars = {}
 
-    # I should use urllib to check the salt repo url to auto detect the latest
-    # salt version for use as default
-    env_vars["SALT_VERSION"] = "3007.0"
+    env_vars["SALT_VERSION"] = salt_version
 
     if enterprise:
         raas_rpm_path = glob.glob('build/raas/eapi_service/files/raas*.rpm')[0]
@@ -180,24 +179,28 @@ def prompt_docker_compose():
         else:
             print("Please answer yes or no.")
 
-def handle_oss_mode():
+def handle_oss_mode(salt_version):
     """
     Handles the preparation for open-source bits.
+
+    salt_version - string - version of salt to use
     """
     clean_environment()
-    write_env_file()
+    write_env_file(salt_version)
     create_symlink('oss-compose.yaml', 'compose.yaml')
     print_file_contents('.env')
     prompt_docker_compose()
 
-def handle_enterprise_mode():
+def handle_enterprise_mode(salt_version):
     """
     Handles the preparation for enterprise bits.
+
+    salt_version - string - version of salt to use
     """
     clean_environment()
     extract_enterprise_bundle()
     copy_enterprise_installers()
-    write_env_file(enterprise=True)
+    write_env_file(salt_version, enterprise=True)
     configure_redis()
     create_symlink('aria-compose.yaml', 'compose.yaml')
     print_file_contents('.env')
@@ -214,6 +217,9 @@ def main():
     parser.add_argument('-c', '--clean', help='Clean up build dirs', action='store_true')
     parser.add_argument('-o', '--open-source', help='Prep open source bits', action='store_true')
     parser.add_argument('-e', '--enterprise', help='Prep enterprise bits', action='store_true')
+    # I should use urllib to check the salt repo url to auto detect the latest
+    # salt version for use as default
+    parser.add_argument('salt_version', nargs='?', default='3007.0', help='Which version of salt to use')
     args = parser.parse_args()
 
     if args.clean:
@@ -222,12 +228,11 @@ def main():
         return
 
     if args.open_source:
-        handle_oss_mode()
+        handle_oss_mode(args.salt_version)
         return
 
-    # TODO: this is not creating the enterprise env file as expected
     if args.enterprise:
-        handle_enterprise_mode()
+        handle_enterprise_mode(args.salt_version)
         return
 
 if __name__ == "__main__":
