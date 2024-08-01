@@ -7,30 +7,6 @@ import tarfile
 import glob
 import argparse
 
-def script_doctor():
-    """
-    Check if the system is able to run the script
-    """
-    # check if docker is installed and in PATH
-    docker_not_present = subprocess.run(['docker', '--help'], capture_output=True).returncode
-    if docker_not_present:
-        print('Docker is either not installed or the `docker` command is not in the PATH')
-    else:
-        print('Docker is installed')
-
-    # check if docker compose is instsalled and in PATH
-    docker_compose_not_present = subprocess.run(['docker', 'compose', '--help'], capture_output=True).returncode
-    if docker_compose_not_present:
-        print('Docker Compose is either not installed or `docker compose` is not in the PATH')
-    else:
-        print('Docker Compose is installed')
-
-    docker_not_running = subprocess.run(['docker', 'ps'], capture_output=True).returncode
-    if docker_not_running:
-        print('Docker is not running')
-    else:
-        print('Docker is running')
-
 def clean_environment():
     """
     Cleans up existing build directories and environment files.
@@ -175,7 +151,6 @@ def main():
     parser.add_argument('-c', '--clean', help='Clean up build dirs', action='store_true')
     parser.add_argument('-o', '--open-source', help='Prep open source bits', action='store_true')
     parser.add_argument('-e', '--enterprise', help='Prep enterprise bits', action='store_true')
-    parser.add_argument('-d', '--doctor', help='Check if prereqs for host system are met', action='store_true')
     parser.add_argument('salt_version', nargs='?', default='3007.1', help='Which version of salt to use. Defaults to 3007.1')
     args = parser.parse_args()
 
@@ -190,10 +165,6 @@ def main():
 
     if args.enterprise:
         handle_enterprise_mode(args.salt_version)
-        return
-
-    if args.doctor:
-        script_doctor()
         return
 
 if __name__ == "__main__":
