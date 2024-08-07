@@ -10,7 +10,7 @@ Tell the script if you want an open source or enterprise lab. If you want an ent
 If you want to run an open source lab no other external dependencies are needed, just an internet connection to pull Docker images and install packages into them.
 
 ```
-usage: prep.py [-h] [-c] [-o] [-e] [salt_version]
+usage: prep.py [-h] [-c] [-e] [salt_version]
 
 positional arguments:
   salt_version       Which version of salt to use. Defaults to 3007.1
@@ -18,7 +18,6 @@ positional arguments:
 options:
   -h, --help         show this help message and exit
   -c, --clean        Clean up build dirs
-  -o, --open-source  Prep open source bits
   -e, --enterprise   Prep enterprise bits
   ```
 
@@ -27,10 +26,10 @@ Once everything is up you can load the web UI at [localhost](http://localhost:80
 ### Example commands
 
 To run an open source lab with the latest version of salt run the following:
-`./prep.py --open-source`
+`./prep.py `
 
 To run an open source lab with a specific version of salt run something like this:
-`./prep.py --open-source 3006.8`
+`./prep.py 3006.8`
 
 To run an enterprise lab with the latest version of salt run the following:
 `./prep.py --enterprise`

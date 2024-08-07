@@ -149,7 +149,6 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--clean', help='Clean up build dirs', action='store_true')
-    parser.add_argument('-o', '--open-source', help='Prep open source bits', action='store_true')
     parser.add_argument('-e', '--enterprise', help='Prep enterprise bits', action='store_true')
     parser.add_argument('salt_version', nargs='?', default='3007.1', help='Which version of salt to use. Defaults to 3007.1')
     args = parser.parse_args()
@@ -159,13 +158,11 @@ def main():
         print("Build environment cleaned")
         return
 
-    if args.open_source:
-        handle_oss_mode(args.salt_version)
-        return
-
     if args.enterprise:
         handle_enterprise_mode(args.salt_version)
         return
+
+    handle_oss_mode(args.salt_version)
 
 if __name__ == "__main__":
     main()
