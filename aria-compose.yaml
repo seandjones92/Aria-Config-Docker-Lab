@@ -54,66 +54,15 @@ services:
       - ./data/srv-salt:/srv/salt
       - ./data/srv-pillar:/srv/pillar
     depends_on:
-      - salt-minion-ubuntu
-      - salt-minion-centos
-      - salt-minion-debian
-      - salt-minion-fedora
+      - salt-minion
     logging:
       options:
         max-size: "200k"
         max-file: "5"
 
-  salt-minion-ubuntu:
+  salt-minion:
     build:
-      context: ./build/salt-minion-ubuntu
-      args:
-        salt_version: ${SALT_VERSION}
-    command: "-l debug"
-    deploy:
-      mode: replicated
-      replicas: 1
-    volumes:
-      - ./data/minion.d:/etc/salt/minion.d
-    logging:
-      options:
-        max-size: "200k"
-        max-file: "5"
-
-  salt-minion-centos:
-    build:
-      context: ./build/salt-minion-centos
-      args:
-        salt_version: ${SALT_VERSION}
-    command: "-l debug"
-    deploy:
-      mode: replicated
-      replicas: 1
-    volumes:
-      - ./data/minion.d:/etc/salt/minion.d
-    logging:
-      options:
-        max-size: "200k"
-        max-file: "5"
-
-  salt-minion-debian:
-    build:
-      context: ./build/salt-minion-debian
-      args:
-        salt_version: ${SALT_VERSION}
-    command: "-l debug"
-    deploy:
-      mode: replicated
-      replicas: 1
-    volumes:
-      - ./data/minion.d:/etc/salt/minion.d
-    logging:
-      options:
-        max-size: "200k"
-        max-file: "5"
-
-  salt-minion-fedora:
-    build:
-      context: ./build/salt-minion-fedora
+      context: ./build/salt-minion
       args:
         salt_version: ${SALT_VERSION}
     command: "-l debug"

@@ -12,7 +12,7 @@ def clean_environment():
     Cleans up existing build directories and environment files.
     """
     if os.path.exists('compose.yaml'):
-        subprocess.run(['docker', 'compose', 'down'])
+        subprocess.run(['docker', 'compose', 'down', '-v', '--rmi', 'all'])
 
     directories_to_remove = [
         './build/sse-installer',
@@ -150,7 +150,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--clean', help='Clean up build dirs', action='store_true')
     parser.add_argument('-e', '--enterprise', help='Prep enterprise bits', action='store_true')
-    parser.add_argument('salt_version', nargs='?', default='3007.1', help='Which version of salt to use. Defaults to 3007.1')
+    parser.add_argument('salt_version', nargs='?', default='3006.9', help='Which version of salt to use. Defaults to 3006.9')
     args = parser.parse_args()
 
     if args.clean:

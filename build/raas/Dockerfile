@@ -1,4 +1,4 @@
-FROM quay.io/centos/centos:stream9
+FROM almalinux:9.4-20240923
 ARG filename
 COPY ./eapi_service/files/$filename $filename
 COPY ./init.sh /usr/local/bin/init.sh
