@@ -95,7 +95,7 @@ def prepare_enterprise_bundle():
     installer_bundle = glob.glob('vRA_SaltStack_Config*.tar.gz')
     if installer_bundle:
         with tarfile.open(installer_bundle[0], 'r:gz') as tar:
-            tar.extractall(path='build')
+            tar.extractall(path='build', filter='tar')
     else:
         print("Installer bundle not found.")
     shutil.copytree('build/sse-installer/salt/sse/eapi_service', 'build/raas/eapi_service')
