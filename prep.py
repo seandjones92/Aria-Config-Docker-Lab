@@ -2,24 +2,6 @@
 
 """
 Build and Deployment Script for OSS and Enterprise Configurations
-
-This script manages the build and deployment environment using Docker Compose.
-It handles environment cleanup, environment variable setup, preparation of
-enterprise bundles, and user interaction for initiating Docker Compose operations.
-
-Features:
-- Clean existing environments and build directories
-- Setup environment variables for OSS and Enterprise modes
-- Prepare and extract enterprise installer bundles
-- Create and manage symbolic links with absolute paths
-- Interactive and non-interactive modes for Docker Compose execution
-- Comprehensive logging with configurable log levels and output destinations
-- Secure handling of sensitive credentials
-- Dependency checks for required external tools
-- Enhanced error handling and user feedback
-
-Author: [Your Name]
-Date: [Date]
 """
 
 import os
