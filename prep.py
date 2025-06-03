@@ -320,9 +320,21 @@ def create_symlink(target: str, link_name: str, script_dir: Path):
         logging.error(f"Target for symlink does not exist: {target_path}")
         sys.exit(1)
 
-    if link_path.is_symlink() or link_path.exists():
-        logging.debug(f"Symlink {link_name} already exists. Skipping creation.")
-        return
+    if link_path.is_symlink():
+        existing_target = os.readlink(link_path)
+        if existing_target != str(target_path):
+            try:
+                link_path.unlink()
+                logging.debug(f"Removed existing symlink {link_name} -> {existing_target}")
+            except OSError as e:
+                logging.error(f"Failed to remove existing symlink {link_name}: {e}")
+                sys.exit(1)
+        else:
+            logging.debug(f"Symlink {link_name} already exists and points to correct target.")
+            return
+    elif link_path.exists():
+        logging.error(f"Cannot create symlink {link_name} because a file or directory already exists at this location.")
+        sys.exit(1)
 
     try:
         os.symlink(target_path, link_path)

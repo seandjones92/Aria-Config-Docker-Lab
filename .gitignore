@@ -11,4 +11,5 @@ data/raas/initialized
 data/raas/raas.secconf
 data/raas/pki/*
 data/redis/redis.conf
+data/master.d
 __pycache__
